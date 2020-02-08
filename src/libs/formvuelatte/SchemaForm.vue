@@ -24,7 +24,7 @@ import useVuelidate from '@/libs/vuelidate'
 import { required } from '@/libs/validators/withMessages'
 
 export default {
-  setup (props, context) {
+  setup (props, { emit }) {
     const state = reactive({ name: '' })
     const nameVal$ = useVuelidate({ name: { required } }, state)
 
@@ -43,14 +43,14 @@ export default {
     })
 
     const update = (property, value) => {
-      context.emit('input', {
+      emit('input', {
         ...props.value,
         [property]: value
       })
     }
 
     const updateBatch = (property, values) => {
-      context.emit('input', {
+      emit('input', {
         ...props.value,
         ...values
       })
