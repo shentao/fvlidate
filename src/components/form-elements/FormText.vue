@@ -5,27 +5,24 @@
     </label>
     <input
       class="input"
-      :value="value"
+      :value="modelValue"
       :type="config.type"
       :required="required"
       :id="label"
       :disabled="readOnly"
-      @input="$emit('input', $event.target.value)"
+      @input="$emit('update', $event.target.value)"
     >
   </div>
 </template>
 
 <script>
-import FormMixin from '@/libs/formvuelatte/FormMixin'
-
 export default {
-  mixins: [FormMixin],
   props: {
     required: {
       type: Boolean,
       default: () => false
     },
-    value: { required: true },
+    modelValue: { required: true },
     label: {
       type: String,
       required: true

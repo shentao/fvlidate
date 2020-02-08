@@ -2,7 +2,7 @@ import { toRefs } from 'vue'
 
 export default function VuelidatePlugin (useVuelidate) {
   return function (baseReturns, props) {
-    const state = toRefs(props).value
+    const state = toRefs(props).modelValue
 
     const { parsedSchema } = baseReturns
     const validationRules = parsedSchema.value.reduce((rules, field) => {

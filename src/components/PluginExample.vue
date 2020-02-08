@@ -2,7 +2,8 @@
   <div>
     <SchemaFormWithValidations
       :schema="schema"
-      :value="userData"
+      :modelValue="userData"
+      @update="updateUserData"
     />
   </div>
 </template>
@@ -54,9 +55,14 @@ export default {
       email: ''
     })
 
+    const updateUserData = value => {
+      userData.value = value
+    }
+
     return {
       schema: SCHEMA,
-      userData
+      userData,
+      updateUserData
     }
   }
 }

@@ -7,11 +7,12 @@
         :key="field.model"
         :is="field.component"
         v-bind="binds(field)"
-        :value="val(field)"
-        @input="update(field.model, $event)"
+        :modelValue="val(field)"
+        @update="update(field.model, $event)"
         @update-batch="updateBatch(field.model, $event)"
       />
       <slot/>
+      <pre>{{ modelValue }}</pre>
       <pre>{{ vResults }}</pre>
     </form>
     <slot name="afterForm"></slot>
@@ -19,15 +20,10 @@
 </template>
 
 <script>
-import { computed, reactive } from 'vue'
-import useVuelidate from '@/libs/vuelidate'
-import { required } from '@/libs/validators/withMessages'
+import { computed } from 'vue'
 
 export default {
   setup (props, { emit }) {
-    const state = reactive({ name: '' })
-    const nameVal$ = useVuelidate({ name: { required } }, state)
-
     const parsedSchema = computed(() => {
       if (Array.isArray(props.schema)) return props.schema
 
@@ -43,15 +39,15 @@ export default {
     })
 
     const update = (property, value) => {
-      emit('input', {
-        ...props.value,
+      emit('update', {
+        ...props.modelValue,
         [property]: value
       })
     }
 
     const updateBatch = (property, values) => {
-      emit('input', {
-        ...props.value,
+      emit('update', {
+        ...props.modelValue,
         ...values
       })
     }
@@ -67,7 +63,7 @@ export default {
         return {}
       }
 
-      return props.value[field.model]
+      return props.modelValue[field.model]
     }
 
     return {
@@ -75,10 +71,7 @@ export default {
       val,
       binds,
       update,
-      updateBatch,
-      name,
-      nameVal$,
-      state
+      updateBatch
     }
   },
   props: {
@@ -91,7 +84,7 @@ export default {
         return schema.filter(field => !field.model && !field.schema).length === 0
       }
     },
-    value: {
+    modelValue: {
       type: Object,
       required: true
     },
