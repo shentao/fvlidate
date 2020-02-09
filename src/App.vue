@@ -24,6 +24,9 @@ export default {
   &:hover
     @apply bg-green-700
 
+  &:disabled
+    @apply bg-gray-400 pointer-events-none
+
 #app
   @apply p-4
   font-family Avenir, Helvetica, Arial, sans-serif

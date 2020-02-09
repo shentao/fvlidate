@@ -8,14 +8,13 @@
         :is="field.component"
         v-bind="binds(field)"
         :modelValue="val(field)"
+        :vResults="vResults[field.model]"
         @update="update(field.model, $event)"
         @update-batch="updateBatch(field.model, $event)"
       />
       <slot/>
-      <pre>{{ modelValue }}</pre>
-      <pre>{{ vResults }}</pre>
     </form>
-    <slot name="afterForm"></slot>
+    <slot name="afterForm" v-bind="{ vResults }"></slot>
   </div>
 </template>
 

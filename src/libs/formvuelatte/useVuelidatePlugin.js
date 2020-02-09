@@ -1,4 +1,4 @@
-import { toRefs } from 'vue'
+import { toRefs, reactive } from 'vue'
 
 export default function VuelidatePlugin (useVuelidate) {
   return function (baseReturns, props) {
@@ -19,9 +19,7 @@ export default function VuelidatePlugin (useVuelidate) {
 
     return {
       ...baseReturns,
-      validationRules,
-      state,
-      vResults
+      vResults: reactive(vResults)
     }
   }
 }

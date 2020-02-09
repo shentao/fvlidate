@@ -4,7 +4,15 @@
       :schema="schema"
       :modelValue="userData"
       @update="updateUserData"
-    />
+    >
+      <template #afterForm="{ vResults }">
+        <button type="button" class="button mt-3" :disabled="vResults.$invalid">
+          Submit
+        </button>
+        <hr class="my-8">
+        <pre>{{ vResults }}</pre>
+      </template>
+    </SchemaFormWithValidations>
   </div>
 </template>
 
@@ -14,34 +22,47 @@ import SchemaFormFactory from '@/libs/formvuelatte/SchemaFormFactory'
 import useVuelidate from '@/libs/vuelidate'
 import VuelidatePlugin from '@/libs/formvuelatte/useVuelidatePlugin'
 import { required, email } from '@/libs/validators/withMessages'
-import { ref } from 'vue'
+import { ref, h, watch } from 'vue'
 
 const SchemaFormWithValidations = SchemaFormFactory([VuelidatePlugin(useVuelidate)])
 
+const withErrors = Comp => (props, { attrs }) => {
+  const errors = props.vResults.$errors
+  return h('div', {}, [
+    h(Comp, {
+      ...props,
+      ...attrs,
+      invalid: !!errors.length
+    }),
+    errors.map(error => h('small', { class: 'block mb-2' }, `${error.$message}`))
+  ])
+}
+
 const SCHEMA = {
   firstName: {
-    component: FormText,
+    component: withErrors(FormText),
     label: 'First Name',
     validations: {
       required
     }
   },
   lastName: {
-    component: FormText,
+    component: withErrors(FormText),
     label: 'Last Name',
     validations: {
       required
     }
   },
   email: {
-    component: FormText,
+    component: withErrors(FormText),
     label: 'Your email',
     required: true,
     config: {
       type: 'email'
     },
     validations: {
-      email
+      email,
+      required
     }
   }
 }

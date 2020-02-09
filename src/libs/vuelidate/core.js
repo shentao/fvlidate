@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, ref, watch } from 'vue'
+import { reactive, computed, ref, watch } from 'vue'
 
 /**
  * @typedef NormalizedValidator
@@ -148,7 +148,8 @@ function createAsyncResult (rule, model, initResult, $pending) {
  * @param {*} model
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, model) {
+function createValidatorResult (rule, state, key) {
+  const model = computed(() => state.value[key])
   const ruleResult = callRule(rule.$validator, model)
 
   const $pending = ref(false)
@@ -228,16 +229,17 @@ function createValidationResults (rules, state, key, parentKey) {
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
-      state[key]
+      state,
+      key
     )
   })
 
   result.$invalid = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$invalid)
+    ruleKeys.some(ruleKey => result[ruleKey].$invalid.value)
   )
 
   result.$pending = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$pending)
+    ruleKeys.some(ruleKey => result[ruleKey].$pending.value)
   )
 
   result.$error = computed(() =>
@@ -245,7 +247,7 @@ function createValidationResults (rules, state, key, parentKey) {
   )
 
   result.$errors = computed(() => ruleKeys
-    .filter(ruleKey => unwrap(result[ruleKey]).$invalid)
+    .filter(ruleKey => result[ruleKey].$invalid.value)
     .map(ruleKey => {
       const res = result[ruleKey]
       return {
@@ -387,6 +389,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
 
   // Use rules for the current state fragment and validate it
   const results = createValidationResults(rules, state, key, parentKey)
+
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
   const nestedResults = collectNestedValidationResults(nestedValidators, state, key)
@@ -425,7 +428,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     }
   }
 
-  return {
+  return reactive({
     ...results,
     // NOTE: The order here is very important, since we want to override
     // some of the *results* meta fields with the collective version of it
@@ -438,5 +441,5 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $anyDirty,
     $pending,
     ...nestedResults
-  }
+  })
 }

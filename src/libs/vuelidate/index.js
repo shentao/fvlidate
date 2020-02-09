@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed } from 'vue'
+import { watch, provide, inject, ref, computed } from 'vue'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -39,16 +39,14 @@ export default function useVuelidate (validationsArg, state, registerAs) {
     injectToParent(validationResults, registerAs)
   }
 
-  return computed(() => {
-    if (registerAs && childResultsKeys.value.length) {
-      return {
-        ...validationResults,
-        ...childResults.value
-      }
-    } else {
-      return validationResults
+  if (registerAs && childResultsKeys.value.length) {
+    return {
+      ...validationResults,
+      ...childResults.value
     }
-  })
+  } else {
+    return validationResults
+  }
 }
 
 /**

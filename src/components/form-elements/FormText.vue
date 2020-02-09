@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-3 mb-1" :class="invalid && 'has-errors'">
     <label :for="label">
       {{ label }}
     </label>
@@ -18,6 +18,10 @@
 <script>
 export default {
   props: {
+    invalid: {
+      type: Boolean,
+      default: false
+    },
     required: {
       type: Boolean,
       default: () => false
@@ -40,6 +44,12 @@ export default {
 </script>
 
 <style lang="stylus">
+.has-errors
+  label
+    @apply text-red-600
+  .input
+    @apply border-red-500
+
 .input
   @apply p-2 border border-gray-300 rounded block
 
