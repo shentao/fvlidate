@@ -10,6 +10,7 @@
       <FormText label="Repeat Password: " type="text" v-model="repeatPassword" />
     </div>
     <button class="button" type="button" @click="v$.$touch">Submit</button>
+    <button class="button" type="button" @click="v$.$reset">Reset</button>
 
     <div
       v-for="(error, index) of v$.$errors"
@@ -31,7 +32,7 @@ import useVuelidate from '@/libs/vuelidate'
 import { required, minLength, sameAs, helpers } from '@/libs/validators/withMessages'
 import FormText from '@/components/form-elements/FormText'
 
-const { withMessage, withParams, unwrap } = helpers
+const { unwrap } = helpers
 
 function $t (key, params) {
   return {
@@ -42,6 +43,7 @@ function $t (key, params) {
 const asyncValidator = {
   $async: true,
   $validator: v => new Promise(resolve => {
+    console.log('doing async!')
     setTimeout(() => {
       resolve(v === 'aaaa')
     }, 2000)
@@ -55,20 +57,14 @@ function usePassword ({ minimumLength }) {
 
   const rules = {
     password: {
-      required: withMessage('This field is required', required),
-      minLength: withMessage(
-        ({ $params }) => `Has to be at least ${$params.length} characters long`,
-        minLength(minimumLength)
-      ),
+      required,
+      minLength: minLength(minimumLength),
       asyncValidator,
       $autoDirty: true
     },
     repeatPassword: {
       required,
-      sameAs: withMessage(
-        ({ $params }) => $t('errors.sameAs', $params.equalTo),
-        sameAs(password)
-      ),
+      sameAs: sameAs(password),
       $autoDirty: true
     }
   }
@@ -84,9 +80,6 @@ function usePassword ({ minimumLength }) {
     rules
   }
 }
-
-const hasKeys = keyLength => value => Object.keys(value).length === unwrap(keyLength)
-const hasKeysWithParams = keys => withParams({ keys }, hasKeys(keys))
 
 export default {
   components: { FormText },

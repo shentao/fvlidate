@@ -31,6 +31,7 @@ import useVuelidate from '@/libs/vuelidate'
 import VuelidatePlugin from '@/libs/formvuelatte/useVuelidatePlugin'
 import { required, email } from '@/libs/validators/withMessages'
 import { ref, h, watch, toRefs } from 'vue'
+import EmailModal from '@/components/form-elements/EmailModal'
 
 const SchemaFormWithValidations = SchemaFormFactory([VuelidatePlugin(useVuelidate)])
 
@@ -96,6 +97,9 @@ const SCHEMA = {
       email,
       required
     }
+  },
+  emailTemplate: {
+    component: EmailModal
   }
 }
 

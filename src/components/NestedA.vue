@@ -29,7 +29,7 @@
 import { ref } from 'vue'
 import useVuelidate from '@/libs/vuelidate'
 import { required, maxValue } from '@/libs/validators/withMessages'
-import NestedB from './NestedB'
+import NestedB from '@/components/NestedB'
 import FormText from '@/components/form-elements/FormText'
 
 export default {

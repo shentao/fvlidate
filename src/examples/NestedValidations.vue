@@ -7,7 +7,12 @@
     <div style="margin-bottom: 20px">
       <FormText
         label="NumberX"
-        v-model="v$.numberX.$model"
+        v-model="numberX"
+        :config="{ type: 'number' }"
+      />
+      <FormText
+        label="NumberY"
+        v-model="numberY"
         :config="{ type: 'number' }"
       />
     </div>
@@ -20,28 +25,25 @@ import { ref, computed } from 'vue'
 import FormText from '@/components/form-elements/FormText'
 import useVuelidate from '@/libs/vuelidate'
 import { required, minValue } from '@/libs/validators/withMessages'
-import NestedA from './NestedA'
+import NestedA from '@/components/NestedA'
 
 export default {
   components: { NestedA, FormText },
   setup () {
     const numberX = ref(0)
-    const conditionalParam = ref('')
+    const numberY = ref(0)
 
-    const validations = computed(() => {
-      const v = { numberX: { required, minValue: minValue(3) } }
-      if (numberX.value > 5) {
-        v.conditionalParam = { required }
-      }
-      return v
-    })
+    const validations = {
+      numberX: { required, minValue: minValue(3), $autoDirty: true },
+      numberY: { required, minValue: minValue(3) }
+    }
 
     const v$ = useVuelidate(
       validations,
-      { numberX, conditionalParam }
+      { numberX, numberY }
     )
 
-    return { v$, numberX, conditionalParam }
+    return { v$, numberX, numberY }
   }
 }
 </script>

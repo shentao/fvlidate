@@ -1,45 +1,58 @@
 <template>
-  <div>
-    <BaseButton class="baseButton" type="button" @click="modalShown = !modalShown">Email</BaseButton>
+  <div class="mt-2 mb-1">
+    <button class="button" type="button" @click="modalShown = !modalShown">Edit Email Contents</button>
 
     <Modal v-if="modalShown">
-      <template v-if="!schema">
-        <p>Configure your email:</p>
-        <FormText label="Title" v-model="values.title" />
-        <FormText label="Content" v-model="values.content" />
-      </template>
+      <p>Configure your email:</p>
+      <FormText
+        label="Title"
+        v-model="values.title"
+      />
+      <FormText
+        label="Content"
+        v-model="values.content"
+      />
 
-      <template v-if="schema">
-        <SchemaForm :schema="schema" v-model="values" />
-      </template>
-
-      <BaseButton @click="save">Save</BaseButton>
-      <BaseButton @click="modalShown = false">Cancel</BaseButton>
+      <div class="mt-3">
+        <button class="button mr-2" @click="save">Save</button>
+        <button class="button" @click="modalShown = false">Cancel</button>
+      </div>
     </Modal>
   </div>
 </template>
 
 <script>
+import { toRefs } from 'vue'
 import FormText from './FormText'
-import BaseButton from './BaseButton'
 import Modal from './Modal'
+import useVuelidate from '@/libs/vuelidate'
+import { required, minValue } from '@/libs/validators/withMessages'
 
 export default {
-  components: { Modal, BaseButton, FormText },
+  components: { Modal, FormText },
   props: {
-    value: { required: true },
+    modelValue: { required: true },
     schema: { type: Object, required: false }
+  },
+  setup (props, { emit }) {
+    const { modelValue } = toRefs(props)
+
+    function save () {
+      emit('update:modelValue', {
+
+      })
+    }
   },
   data () {
     return {
       modalShown: false,
-      values: { ...this.value }
+      values: { ...this.modelValue }
     }
   },
   methods: {
     save () {
-      this.$emit('input', {
-        ...this.value,
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
         ...this.values
       })
 

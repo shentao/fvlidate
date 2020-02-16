@@ -1,7 +1,7 @@
 <template>
   <div>
-    <FormText label="Favorite color" :value="form.color" @input="textInput('color', $event)"></FormText>
-    <FormText label="Favorite song" :value="form.song" @input="textInput('song', $event)"></FormText>
+    <FormText label="Favorite color" :modelValue="form.color" @input="textInput('color', $event)"></FormText>
+    <FormText label="Favorite song" :modelValue="form.song" @input="textInput('song', $event)"></FormText>
   </div>
 </template>
 

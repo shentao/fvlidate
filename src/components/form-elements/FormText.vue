@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3 mb-1" :class="invalid && 'has-errors'">
+  <div class="mt-2 mb-1" :class="invalid && 'has-errors'">
     <label :for="label">
       {{ label }}
     </label>

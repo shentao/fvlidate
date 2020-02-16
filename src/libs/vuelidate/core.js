@@ -1,4 +1,4 @@
-import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
+import { isFunction, unwrap, unwrapObj } from './utils'
 import { computed, reactive, ref, watch } from 'vue'
 
 /**
@@ -148,7 +148,6 @@ function createAsyncResult (rule, model, $pending, $dirty) {
  */
 function createValidatorResult (rule, state, key, $dirty) {
   const model = computed(() => unwrap(unwrap(state)[key]))
-  // const ruleResult = callRule(rule.$validator, model)
 
   const $pending = ref(false)
   const $params = rule.$params || {}
@@ -450,7 +449,9 @@ export function setValidations ({ validations, state, key, parentKey, childResul
 
   if (config.$autoDirty) {
     // we set lazy: true to stop watcher eager invocation
-    watch(state[key], $touch, { lazy: true })
+    watch(state[key], () => {
+      if (!$dirty.value) $touch()
+    }, { lazy: true })
   }
 
   return reactive({

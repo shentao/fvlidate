@@ -1,12 +1,15 @@
 <template>
-  <div>
-    <label>
+  <div class="mt-2 mb-1">
+    <label class="md:w-2/3 block font-bold">
       <input
+        class="mr-2 leading-tight"
         type="checkbox"
-        :checked="value"
-        @input="$emit('input', $event.target.checked)"
+        :checked="modelValue"
+        @input="$emit('update:modelValue', $event.target.checked)"
       >
-      {{ label }}
+      <span class="text-sm">
+        {{ label }}
+      </span>
     </label>
   </div>
 </template>
@@ -15,9 +18,18 @@
 import FormMixin from '@/libs/formvuelatte/FormMixin'
 
 export default {
-  mixins: [FormMixin],
   props: {
-    value: { required: true },
+    modelValue: {
+      required: true
+    },
+    required: {
+      type: Boolean,
+      default: () => false
+    },
+    config: {
+      type: Object,
+      default: () => {}
+    },
     label: {
       type: String,
       required: true

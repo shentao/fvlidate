@@ -1,4 +1,5 @@
 import { toRefs, reactive, watch } from 'vue'
+import { required } from '@/libs/validators/withMessages'
 
 export default function VuelidatePlugin (useVuelidate) {
   return function (baseReturns, props, { emit }) {
@@ -22,7 +23,7 @@ export default function VuelidatePlugin (useVuelidate) {
 
     // console.log(validationRules)
 
-    const vResults = useVuelidate(validationRules, state)
+    const vResults = useVuelidate({ x: 1 }, { x: { required } })
 
     emit('update:validations', vResults)
 
