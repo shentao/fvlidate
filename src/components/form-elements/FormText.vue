@@ -10,7 +10,7 @@
       :required="required"
       :id="label"
       :disabled="readOnly"
-      @input="$emit('update', $event.target.value)"
+      @input="$emit('update:modelValue', $event.target.value)"
     >
   </div>
 </template>

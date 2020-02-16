@@ -9,7 +9,7 @@
         v-bind="binds(field)"
         :modelValue="val(field)"
         :vResults="vResults[field.model]"
-        @update="update(field.model, $event)"
+        @update:modelValue="update(field.model, $event)"
         @update-batch="updateBatch(field.model, $event)"
       />
       <slot/>
@@ -20,6 +20,7 @@
 
 <script>
 import { computed } from 'vue'
+import { SchemaFormBase } from './SchemaFormFactory'
 
 export default {
   setup (props, { emit }) {

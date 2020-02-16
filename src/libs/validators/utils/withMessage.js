@@ -16,7 +16,8 @@ export default function withMessage ($message, $validator) {
   if (!isObject($validator) && !isFunction($validator)) throw new Error('[@vuelidate/validators]: Validator must be a function or object with $validator parameter')
 
   const validatorObj = normalizeValidatorObject($validator)
-  validatorObj.$message = $message
-
-  return validatorObj
+  return {
+    ...validatorObj,
+    $message
+  }
 }

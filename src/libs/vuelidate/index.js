@@ -1,4 +1,4 @@
-import { watch, provide, inject, ref, computed } from 'vue'
+import { provide, inject, ref, computed, reactive } from 'vue'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -12,8 +12,9 @@ const VuelidateSymbol = Symbol('vuelidate')
  * @param {String} registerAs
  * @return {UnwrapRef<*>}
  */
-export default function useVuelidate (validationsArg, state, registerAs) {
+export default function useVuelidate (validationsArg = {}, state = {}, registerAs) {
   const validations = unwrap(validationsArg)
+
   const childResultsRaw = {}
   const childResultsKeys = ref([])
   const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
@@ -26,7 +27,6 @@ export default function useVuelidate (validationsArg, state, registerAs) {
   function injectChildResults (results, key) {
     childResultsRaw[key] = results
     childResultsKeys.value.push(key)
-    injectToParent(results, key)
   }
 
   const validationResults = setValidations({
@@ -39,14 +39,18 @@ export default function useVuelidate (validationsArg, state, registerAs) {
     injectToParent(validationResults, registerAs)
   }
 
-  if (registerAs && childResultsKeys.value.length) {
-    return {
-      ...validationResults,
-      ...childResults.value
+  const results = computed(() => {
+    if (registerAs && childResultsKeys.value.length) {
+      return reactive({
+        ...validationResults,
+        ...childResults
+      })
+    } else {
+      return validationResults
     }
-  } else {
-    return validationResults
-  }
+  })
+
+  return results
 }
 
 /**

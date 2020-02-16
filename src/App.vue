@@ -1,19 +1,48 @@
 <template>
   <div id="app">
-    <!-- <div>
-      <button class="button mr-2" to="/">Home</button>
-      <button class="button" to="/about">About</button>
-    </div> -->
-    <PluginExample />
-    <!-- <component :is="view"/> -->
+    <div>
+      <a
+        v-for="view of views"
+        :key="view.name"
+        :href="view.slug"
+        class="button mr-2"
+      >
+        {{ view.name }}
+      </a>
+    </div>
+    <component v-if="currentView" :is="currentView.comp"/>
   </div>
 </template>
 
 <script>
-import PluginExample from '@/components/PluginExample'
+import { ref, computed } from 'vue'
+import PluginExample from '@/examples/PluginExample'
+import NestedValidations from '@/examples/NestedValidations'
+import AsComposition from '@/examples/AsComposition'
 
 export default {
-  components: { PluginExample }
+  setup () {
+    const currentViewSlug = ref(location.hash)
+    const views = [
+      { comp: PluginExample, name: 'FormVueLatte', slug: '#form-vue-latte' },
+      { comp: NestedValidations, name: 'Nested Validations', slug: '#nested-vuelidate' },
+      { comp: AsComposition, name: 'Composition API', slug: '#composition-api' }
+    ]
+
+    window.addEventListener('hashchange', (...a) => {
+      currentViewSlug.value = location.hash
+    })
+
+    const currentView = computed(
+      () => views.find(v => v.slug === currentViewSlug.value)
+    )
+
+    return {
+      views,
+      currentView,
+      currentViewSlug
+    }
+  }
 }
 </script>
 

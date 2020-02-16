@@ -15,6 +15,13 @@ export default function VuelidatePlugin (useVuelidate) {
       return rules
     }, { $autoDirty: true })
 
+    // const newBinds = field => ({
+    //   ...binds(field),
+    //   validations: validationRules[]
+    // )}
+
+    // console.log(validationRules)
+
     const vResults = useVuelidate(validationRules, state)
 
     return {

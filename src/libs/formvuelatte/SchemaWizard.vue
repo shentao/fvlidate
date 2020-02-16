@@ -13,6 +13,7 @@
 <script>
 import { computed } from 'vue'
 import SchemaForm from './SchemaForm'
+
 export default {
   components: { SchemaForm },
   props: {

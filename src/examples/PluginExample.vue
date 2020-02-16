@@ -6,7 +6,12 @@
       @update="updateUserData"
     >
       <template #afterForm="{ vResults }">
-        <button type="button" class="button mt-3" :disabled="vResults.$invalid">
+        <button
+          type="button"
+          class="button mt-3"
+          :disabled="vResults.$invalid"
+          @click="vResults.$touch"
+        >
           Submit
         </button>
         <hr class="my-8">
@@ -17,12 +22,12 @@
 </template>
 
 <script>
-import FormText from './form-elements/FormText'
+import FormText from '@/components/form-elements/FormText'
 import SchemaFormFactory from '@/libs/formvuelatte/SchemaFormFactory'
 import useVuelidate from '@/libs/vuelidate'
 import VuelidatePlugin from '@/libs/formvuelatte/useVuelidatePlugin'
 import { required, email } from '@/libs/validators/withMessages'
-import { ref, h, watch } from 'vue'
+import { ref, h, watch, toRefs } from 'vue'
 
 const SchemaFormWithValidations = SchemaFormFactory([VuelidatePlugin(useVuelidate)])
 
@@ -38,9 +43,33 @@ const withErrors = Comp => (props, { attrs }) => {
   ])
 }
 
+const withVuelidate = (Comp, useVuelidate) => ({
+  setup (props, { attrs }) {
+    const { validations, modelValue, model } = toRefs(props)
+
+    const vResults = useVuelidate({ [model.value + '_internal']: validations.value }, { [model.value + '_internal']: modelValue }, 'ABCD')
+
+    return {
+      vResults,
+      props,
+      attrs
+    }
+  },
+  render (context) {
+    return h('div', {}, [
+      h(Comp, {
+        ...this.props,
+        ...this.attrs
+      }),
+      // h('small', { class: 'block mb-2' }, `${JSON.stringify(this.vResults)}`)
+      this.vResults.$errors.map(error => h('small', { class: 'block mb-2' }, `${error.$message}`))
+    ])
+  }
+})
+
 const SCHEMA = {
   firstName: {
-    component: withErrors(FormText),
+    component: withVuelidate(FormText, useVuelidate),
     label: 'First Name',
     validations: {
       required

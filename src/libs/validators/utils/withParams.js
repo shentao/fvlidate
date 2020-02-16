@@ -12,10 +12,11 @@ export default function withParams ($params, $validator) {
 
   const validatorObj = normalizeValidatorObject($validator)
 
-  validatorObj.$params = {
-    ...validatorObj.$params,
-    ...$params
+  return {
+    ...validatorObj,
+    $params: {
+      ...validatorObj.$params,
+      ...$params
+    }
   }
-
-  return validatorObj
 }

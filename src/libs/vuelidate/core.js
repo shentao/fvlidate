@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { reactive, computed, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 /**
  * @typedef NormalizedValidator
@@ -91,8 +91,9 @@ function normalizeValidatorResponse (result) {
  * @param {Ref<*>} model
  * @return {Ref<Boolean>}
  */
-function createComputedResult (rule, model) {
+function createComputedResult (rule, model, $dirty) {
   return computed(() => {
+    if (!$dirty.value) return false
     const result = callRule(rule, model)
     return normalizeValidatorResponse(result)
   })
@@ -145,11 +146,12 @@ function createAsyncResult (rule, model, initResult, $pending) {
  * Returns the validation result.
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
- * @param {*} model
+ * @param {Object} state
+ * @param {String} key
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, state, key) {
-  const model = computed(() => state.value[key])
+function createValidatorResult (rule, state, key, $dirty) {
+  const model = computed(() => unwrap(unwrap(state)[key]))
   const ruleResult = callRule(rule.$validator, model)
 
   const $pending = ref(false)
@@ -161,18 +163,19 @@ function createValidatorResult (rule, state, key) {
       ruleResult,
       $pending
     )
-    : createComputedResult(rule.$validator, model)
+    : createComputedResult(rule.$validator, model, $dirty)
 
   const message = rule.$message
   const $message = isFunction(message)
-    ? computed(() => message(
-      unwrapObj({
-        $pending,
-        $invalid,
-        $params,
-        $model: model
-      })
-    ))
+    ? computed(() =>
+      message(
+        unwrapObj({
+          $pending,
+          $invalid,
+          $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
+          $model: model
+        })
+      ))
     : message
 
   return {
@@ -216,7 +219,6 @@ function createValidatorResult (rule, state, key) {
 function createValidationResults (rules, state, key, parentKey) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
-  if (!ruleKeys.length) return {}
 
   const $dirty = ref(false)
 
@@ -226,11 +228,18 @@ function createValidationResults (rules, state, key, parentKey) {
     $reset: () => { $dirty.value = false }
   }
 
+  /**
+   * If there are no validation rules, it is most likely
+   * a top level state, aka root
+   */
+  if (!ruleKeys.length) return result
+
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
       state,
-      key
+      key,
+      $dirty
     )
   })
 
@@ -250,14 +259,14 @@ function createValidationResults (rules, state, key, parentKey) {
     .filter(ruleKey => result[ruleKey].$invalid.value)
     .map(ruleKey => {
       const res = result[ruleKey]
-      return {
+      return reactive({
         $propertyPath: parentKey ? `${parentKey}.${key}` : key,
         $property: key,
         $validator: ruleKey,
         $message: res.$message,
         $params: res.$params,
         $pending: res.$pending
-      }
+      })
     })
   )
 
@@ -296,11 +305,13 @@ function collectNestedValidationResults (validations, state, key) {
 /**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
- * @param {Object<ValidationResult>} nestedResults
- * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>}}
+ * @param {Object<ValidationResult>[]} otherResults
+ * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
 function createMetaFields (results, ...otherResults) {
-  const $dirty = ref(false)
+  // use the $dirty property from the root level results
+  const $dirty = results.$dirty
+
   const allResults = computed(() => otherResults
     .filter(res => res)
     .reduce((allRes, res) => {
@@ -309,7 +320,7 @@ function createMetaFields (results, ...otherResults) {
   )
 
   const $errors = computed(() => {
-    // current state level errors
+    // current state level errors, fallback to empty array if root
     const modelErrors = unwrap(results.$errors) || []
 
     // collect all nested and child $errors
@@ -324,18 +335,20 @@ function createMetaFields (results, ...otherResults) {
   })
 
   const $invalid = computed(() =>
-    // or if the current state is invalid
     // if any of the nested values is invalid
     allResults.value.some(r => r.$invalid) ||
+    // or if the current state is invalid
     unwrap(results.$invalid) ||
+    // fallback to false if is root
     false
   )
 
   const $pending = computed(() =>
     // if any of the nested values is pending
-    // if any of the current state validators is pending
     allResults.value.some(r => r.$pending) ||
+    // if any of the current state validators is pending
     unwrap(results.$pending) ||
+    // fallback to false if is root
     false
   )
 
@@ -345,13 +358,33 @@ function createMetaFields (results, ...otherResults) {
 
   const $error = computed(() => ($invalid.value && $dirty.value) || false)
 
+  const $touch = () => {
+    // call the root $touch
+    results.$touch()
+    // call all nested level $touch
+    Object.values(allResults.value).forEach((result) => {
+      result.$touch()
+    })
+  }
+
+  const $reset = () => {
+    // reset the root $dirty state
+    results.$reset()
+    // reset all the children $dirty states
+    Object.values(allResults.value).forEach((result) => {
+      result.$reset()
+    })
+  }
+
   return {
     $dirty,
     $errors,
     $invalid,
     $anyDirty,
     $error,
-    $pending
+    $pending,
+    $touch,
+    $reset
   }
 }
 
@@ -373,11 +406,12 @@ function createMetaFields (results, ...otherResults) {
  * Main Vuelidate bootstrap function.
  * Used both for Composition API in `setup` and for Global App usage.
  * Used to collect validation state, when walking recursively down the state tree
- * @param {Object<NormalizedValidator|Function>} validations
- * @param {Object} state
- * @param {String} [key] - Current state property key. Used when being called on nested items
- * @param {String} [parentKey] - Parent state property key. Used when being called recursively
- * @param {Object} [childResults] - Used to collect child results. TBD
+ * @param {Object} params
+ * @param {Object<NormalizedValidator|Function>} params.validations
+ * @param {Object} params.state
+ * @param {String} [params.key] - Current state property key. Used when being called on nested items
+ * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
+ * @param {Object} [params.childResults] - Used to collect child results. TBD
  * @return {UnwrapRef<VuelidateState>}
  */
 export function setValidations ({ validations, state, key, parentKey, childResults }) {
@@ -389,7 +423,6 @@ export function setValidations ({ validations, state, key, parentKey, childResul
 
   // Use rules for the current state fragment and validate it
   const results = createValidationResults(rules, state, key, parentKey)
-
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
   const nestedResults = collectNestedValidationResults(nestedValidators, state, key)
@@ -402,30 +435,29 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $invalid,
     $anyDirty,
     $error,
-    $pending
+    $pending,
+    $touch,
+    $reset
   } = createMetaFields(results, nestedResults, childResults)
 
   /**
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-  const $model = key ? '' : computed({
+  const $model = key ? computed({
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
       state[key].value = val
     }
-  })
+  }) : null
 
   if (config.$autoDirty) {
-    if (state[key]) {
-      watch(
-        state[key],
-        () => { $dirty.value = true },
-        // we set lazy: true to stop watcher eager invocation
-        { lazy: true }
-      )
-    }
+    watch(() => unwrap(state)[key],
+      () => { $dirty.value = true },
+      // we set lazy: true to stop watcher eager invocation
+      { lazy: true }
+    )
   }
 
   return reactive({
@@ -433,13 +465,16 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     // NOTE: The order here is very important, since we want to override
     // some of the *results* meta fields with the collective version of it
     // that includes the results of nested state validation results
-    ...(key ? { $model } : {}),
+    $model,
     $dirty,
     $error,
     $errors,
     $invalid,
     $anyDirty,
     $pending,
+    $touch,
+    $reset,
+    // add each nested property's state
     ...nestedResults
   })
 }
