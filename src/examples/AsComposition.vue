@@ -39,12 +39,14 @@ function $t (key, params) {
   }[key]
 }
 
-function asyncValidator (v) {
-  return new Promise(resolve => {
+const asyncValidator = {
+  $async: true,
+  $validator: v => new Promise(resolve => {
     setTimeout(() => {
       resolve(v === 'aaaa')
     }, 2000)
-  })
+  }),
+  $message: ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`
 }
 
 function usePassword ({ minimumLength }) {
@@ -58,10 +60,7 @@ function usePassword ({ minimumLength }) {
         ({ $params }) => `Has to be at least ${$params.length} characters long`,
         minLength(minimumLength)
       ),
-      asyncValidator: withMessage(
-        ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`,
-        asyncValidator
-      ),
+      asyncValidator,
       $autoDirty: true
     },
     repeatPassword: {

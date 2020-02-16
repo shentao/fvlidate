@@ -107,20 +107,16 @@ function createComputedResult (rule, model, $dirty) {
  * @param {Ref<Boolean>} $pending
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, initResult, $pending) {
-  const $invalid = ref(true)
+function createAsyncResult (rule, model, $pending, $dirty) {
+  const $invalid = ref(!!$dirty.value)
 
   $pending.value = true
 
-  initResult.then(data => {
-    $pending.value = false
-    $invalid.value = normalizeValidatorResponse(data)
-  })
-
   watch(
-    model,
+    [model, $dirty],
     modelValue => {
-      const ruleResult = callRule(rule, modelValue)
+      if (!$dirty.value) return false
+      const ruleResult = callRule(rule, model)
 
       $pending.value = true
       $invalid.value = true
@@ -152,16 +148,16 @@ function createAsyncResult (rule, model, initResult, $pending) {
  */
 function createValidatorResult (rule, state, key, $dirty) {
   const model = computed(() => unwrap(unwrap(state)[key]))
-  const ruleResult = callRule(rule.$validator, model)
+  // const ruleResult = callRule(rule.$validator, model)
 
   const $pending = ref(false)
   const $params = rule.$params || {}
-  const $invalid = isPromise(ruleResult)
+  const $invalid = rule.$async
     ? createAsyncResult(
       rule.$validator,
       model,
-      ruleResult,
-      $pending
+      $pending,
+      $dirty
     )
     : createComputedResult(rule.$validator, model, $dirty)
 
@@ -453,11 +449,8 @@ export function setValidations ({ validations, state, key, parentKey, childResul
   }) : null
 
   if (config.$autoDirty) {
-    watch(() => unwrap(state)[key],
-      () => { $dirty.value = true },
-      // we set lazy: true to stop watcher eager invocation
-      { lazy: true }
-    )
+    // we set lazy: true to stop watcher eager invocation
+    watch(state[key], $touch, { lazy: true })
   }
 
   return reactive({

@@ -9,7 +9,7 @@ export default function SchemaFormFactory (plugins = [], config) {
     if (!plugins.length) return baseSchemaFormReturns
     else {
       return plugins.reduce((schemaFormReturns, plugin) => {
-        return plugin(schemaFormReturns, props)
+        return plugin(schemaFormReturns, props, context)
       }, baseSchemaFormReturns)
     }
   }

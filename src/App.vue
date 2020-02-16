@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>
+    <div class="mb-2">
       <a
         v-for="view of views"
         :key="view.name"
@@ -10,6 +10,7 @@
         {{ view.name }}
       </a>
     </div>
+    <hr class="my-3">
     <component v-if="currentView" :is="currentView.comp"/>
   </div>
 </template>
@@ -48,7 +49,7 @@ export default {
 
 <style lang="stylus">
 .button
-  @apply bg-green-500 text-white font-bold py-2 px-4 rounded
+  @apply bg-green-500 text-white font-bold py-2 px-4 rounded inline-block
 
   &:hover
     @apply bg-green-700

@@ -1,7 +1,7 @@
-import { toRefs, reactive } from 'vue'
+import { toRefs, reactive, watch } from 'vue'
 
 export default function VuelidatePlugin (useVuelidate) {
-  return function (baseReturns, props) {
+  return function (baseReturns, props, { emit }) {
     const state = toRefs(props).modelValue
 
     const { parsedSchema } = baseReturns
@@ -23,6 +23,8 @@ export default function VuelidatePlugin (useVuelidate) {
     // console.log(validationRules)
 
     const vResults = useVuelidate(validationRules, state)
+
+    emit('update:validations', vResults)
 
     return {
       ...baseReturns,

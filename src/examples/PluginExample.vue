@@ -1,23 +1,26 @@
 <template>
-  <div>
+  <div class="flex">
     <SchemaFormWithValidations
+      class="w-1/2"
       :schema="schema"
       :modelValue="userData"
       @update="updateUserData"
+      @update:validations="updateValidations"
     >
-      <template #afterForm="{ vResults }">
+      <template #afterForm>
         <button
           type="button"
           class="button mt-3"
-          :disabled="vResults.$invalid"
-          @click="vResults.$touch"
+          :disabled="validations.$invalid"
+          @click="validations.$touch"
         >
           Submit
         </button>
-        <hr class="my-8">
-        <pre>{{ vResults }}</pre>
       </template>
     </SchemaFormWithValidations>
+    <div class="w-1/2">
+      <pre>{{ validations }}</pre>
+    </div>
   </div>
 </template>
 
@@ -109,10 +112,17 @@ export default {
       userData.value = value
     }
 
+    const validations = ref({})
+    const updateValidations = v => {
+      validations.value = v.value
+    }
+
     return {
       schema: SCHEMA,
       userData,
-      updateUserData
+      updateUserData,
+      validations,
+      updateValidations
     }
   }
 }
