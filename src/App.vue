@@ -6,6 +6,7 @@
         :key="view.name"
         :href="view.slug"
         class="button mr-2"
+        :class="[ isCurrent(view.slug) && 'active' ]"
       >
         {{ view.name }}
       </a>
@@ -15,7 +16,8 @@
         v-for="view of fvlViews"
         :key="view.name"
         :href="view.slug"
-        class="button mr-2 bg-blue-500 hover:bg-blue-700"
+        class="button mr-2 button-blue"
+        :class="[ isCurrent(view.slug) && 'active' ]"
       >
         {{ view.name }}
       </a>
@@ -25,7 +27,8 @@
         v-for="view of comboViews"
         :key="view.name"
         :href="view.slug"
-        class="button mr-2 bg-purple-500 hover:bg-purple-700"
+        class="button mr-2 button-purple"
+        :class="[ isCurrent(view.slug) && 'active' ]"
       >
         {{ view.name }}
       </a>
@@ -84,21 +87,44 @@ export default {
       comboViews,
       comboViewsEnabled,
       currentView,
-      currentViewSlug
+      currentViewSlug,
+      isCurrent
+    }
+
+    function isCurrent (slug) {
+      return slug === currentViewSlug.value
     }
   }
 }
 </script>
 
 <style lang="stylus">
+.pre
+  @apply p-3 bg-gray-800 text-green-200 overflow-auto
+
 .button
-  @apply bg-green-500 text-white font-bold py-2 px-4 rounded inline-block
+  @apply bg-green-500 text-white font-bold py-2 px-4 mb-2 mr-2 rounded inline-block
 
   &:hover
-    @apply bg-green-700
+    @apply bg-green-700 text-white
 
   &:disabled
     @apply bg-gray-400 pointer-events-none
+
+  &.active
+    @apply text-white
+
+.button-blue
+  @apply bg-blue-500
+
+  &:hover
+    @apply bg-blue-700
+
+.button-purple
+  @apply bg-purple-500 text-purple-500
+
+  &:hover
+    @apply bg-purple-700
 
 #app
   @apply p-4

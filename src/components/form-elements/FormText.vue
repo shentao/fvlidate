@@ -1,6 +1,6 @@
 <template>
   <div class="mt-2 mb-1" :class="invalid && 'has-errors'">
-    <label :for="label">
+    <label :for="label" class="font-bold">
       {{ label }}
     </label>
     <input

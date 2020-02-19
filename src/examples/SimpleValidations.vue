@@ -1,15 +1,31 @@
 <template>
-  <div style="flex">
+  <div class="flex">
     <div class="w-1/2">
-      <button class="button" type="button" @click="v$.$touch">Touch</button>
+      <h2 class="text-xl">Form</h2>
       <FormText
-        label="password"
-        v-model="v$.password.$model"
-        :config="{ type: 'password' }"
+        label="Email"
+        v-model="v$.userEmail.$model"
+        :invalid="v$.userEmail.$invalid"
+        :config="{ type: 'email' }"
       />
+      <ErrorsList :errors="v$.$errors" />
+      <!-- <div>
+        <span v-for="(error, index) of v$.$errors" :key="index" class="text-red-500">
+          {{ error.$message }}
+        </span>
+      </div> -->
+      <button
+        class="button mt-3"
+        type="button"
+        :disabled="v$.$invalid"
+        @click="v$.$touch"
+      >
+        Submit (with $touch)
+      </button>
     </div>
     <div class="w-1/2">
-      <pre>{{ v$ }}</pre>
+      <h2 class="text-xl">Vuelidate Output:</h2>
+      <pre class="pre">{{ v$ }}</pre>
     </div>
   </div>
 </template>
@@ -18,35 +34,20 @@
 import { ref, computed } from 'vue'
 import FormText from '@/components/form-elements/FormText'
 import useVuelidate from '@/libs/vuelidate'
-import { required, minValue, sameAs } from '@/libs/validators/withMessages'
+import { required, email } from '@/libs/validators/withMessages'
+import ErrorsList from '@/components/ErrorsList'
 
 export default {
-  components: { FormText },
+  components: { FormText, ErrorsList },
   setup () {
-    const requireCaptcha = ref(false)
-    const password = ref('')
-    const captchaCode = ref('')
-    const randomCaptchaCode = String(Math.random()).substr(0, 4)
-    //
-    // const validations = computed(() => {
-    //   const rules = { password: { required, minValue: minValue(3) } }
-    //
-    //   return requireCaptcha.value
-    //     ? {
-    //       ...rules,
-    //       captchaCode: {
-    //         sameAs: sameAs(randomCaptchaCode)
-    //       }
-    //     }
-    //     : rules
-    // })
+    const userEmail = ref('')
 
     const v$ = useVuelidate(
-      { password: { required, minValue: minValue(3) } },
-      { password, captchaCode }
+      { userEmail: { required, email } },
+      { userEmail }
     )
 
-    return { v$, password, captchaCode, requireCaptcha }
+    return { v$, userEmail }
   }
 }
 </script>

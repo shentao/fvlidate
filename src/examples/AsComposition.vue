@@ -43,7 +43,6 @@ function $t (key, params) {
 const asyncValidator = {
   $async: true,
   $validator: v => new Promise(resolve => {
-    console.log('doing async!')
     setTimeout(() => {
       resolve(v === 'aaaa')
     }, 2000)
@@ -59,13 +58,11 @@ function usePassword ({ minimumLength }) {
     password: {
       required,
       minLength: minLength(minimumLength),
-      asyncValidator,
-      $autoDirty: true
+      asyncValidator
     },
     repeatPassword: {
       required,
-      sameAs: sameAs(password),
-      $autoDirty: true
+      sameAs: sameAs(password)
     }
   }
 
@@ -76,8 +73,7 @@ function usePassword ({ minimumLength }) {
   return {
     v$,
     password,
-    repeatPassword,
-    rules
+    repeatPassword
   }
 }
 

@@ -65,7 +65,6 @@ const withVuelidate = (Comp, useVuelidate) => ({
         ...this.props,
         ...this.attrs
       }),
-      // h('small', { class: 'block mb-2' }, `${JSON.stringify(this.v$)}`),
       this.v$.$errors.map(error => h('small', { class: 'block mb-2' }, `${error.$message}`))
     ])
   }

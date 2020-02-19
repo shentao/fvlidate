@@ -1,49 +1,54 @@
 <template>
-  <div style="padding-top: 2rem;">
-    <div style="float: right">
-      <pre>{{ v$ }}</pre>
+  <div class="flex">
+    <div class="w-1/2">
+      <fieldset class="p-2 m-2 border border-black">
+        <h3 class="text-lg">Wrapper Form</h3>
+        <FormText
+          label="NumberX"
+          v-model="numberX"
+          :config="{ type: 'number' }"
+        />
+        <FormText
+          label="NumberY"
+          v-model="numberY"
+          :config="{ type: 'number' }"
+        />
+      <NestedA />
+      <button
+        class="button"
+        type="button"
+        :disabled="v$.$invalid"
+        @click="v$.$touch"
+      >
+        Submit
+      </button>
+      <ErrorsList :errors="v$.$errors" />
+    </fieldset>
     </div>
-    <button class="button" type="button" @click="v$.$touch">Touch</button>
-    <div style="margin-bottom: 20px">
-      <FormText
-        label="NumberX"
-        v-model="numberX"
-        :config="{ type: 'number' }"
-      />
-      <FormText
-        label="NumberY"
-        v-model="numberY"
-        :config="{ type: 'number' }"
-      />
+    <div class="w-1/2">
+      <h2 class="text-xl">Vuelidate Output:</h2>
+      <pre class="pre">{{ v$ }}</pre>
     </div>
-    <NestedA />
   </div>
 </template>
 
 <script>
 import { ref, computed } from 'vue'
-import FormText from '@/components/form-elements/FormText'
 import useVuelidate from '@/libs/vuelidate'
-import { required, minValue } from '@/libs/validators/withMessages'
 import NestedA from '@/components/NestedA'
+import ErrorsList from '@/components/ErrorsList'
+import { required, email } from '@/libs/validators/withMessages'
 
 export default {
-  components: { NestedA, FormText },
+  components: { NestedA, ErrorsList },
   setup () {
-    const numberX = ref(0)
-    const numberY = ref(0)
-
-    const validations = {
-      numberX: { required, minValue: minValue(3), $autoDirty: true },
-      numberY: { required, minValue: minValue(3) }
-    }
-
+    // Collect child validation results
     const v$ = useVuelidate(
-      validations,
-      { numberX, numberY }
+      { userEmail: { required, email } },
+      { userEmail: 'hello' }
     )
 
-    return { v$, numberX, numberY }
+    return { v$ }
   }
 }
 </script>

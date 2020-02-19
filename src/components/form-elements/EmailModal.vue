@@ -39,7 +39,7 @@ export default {
 
     function save () {
       emit('update:modelValue', {
-
+        ...modelValue.value
       })
     }
   },
