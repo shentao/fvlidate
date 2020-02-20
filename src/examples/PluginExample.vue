@@ -32,64 +32,32 @@ import ErrorsList from '@/components/ErrorsList'
 import SchemaFormFactory from '@/libs/formvuelatte/SchemaFormFactory'
 import useVuelidate from '@/libs/vuelidate'
 import VuelidatePlugin from '@/libs/formvuelatte/useVuelidatePlugin'
+import WithErrorsPlugin from '@/libs/formvuelatte/useWithErrorsPlugin'
 import { required, email } from '@/libs/validators/withMessages'
 import { ref, h, watch, toRefs } from 'vue'
 
-const SchemaFormWithValidations = SchemaFormFactory([VuelidatePlugin(useVuelidate)])
-
-const withErrors = Comp => (props, { attrs }) => {
-  const errors = props.vResults.$errors
-  return h('div', {}, [
-    h(Comp, {
-      ...props,
-      ...attrs,
-      invalid: !!errors.length
-    }),
-    errors.map(error => h('small', { class: 'block mb-2' }, `${error.$message}`))
-  ])
-}
-
-const withVuelidate = (Comp, useVuelidate) => ({
-  setup (props, { attrs }) {
-    const { validations, modelValue, model } = toRefs(props)
-
-    const v$ = useVuelidate({ [model.value]: validations.value }, { [model.value]: modelValue }, model.value)
-
-    return {
-      v$,
-      props,
-      attrs
-    }
-  },
-  render (context) {
-    return h('div', {}, [
-      h(Comp, {
-        ...this.props,
-        ...this.attrs,
-        invalid: this.v$.$invalid
-      }),
-      h(ErrorsList, { errors: this.v$.$errors })
-    ])
-  }
-})
+const SchemaFormWithValidations = SchemaFormFactory([
+  WithErrorsPlugin(ErrorsList),
+  VuelidatePlugin(useVuelidate)
+])
 
 const SCHEMA = {
   firstName: {
-    component: withVuelidate(FormText, useVuelidate),
+    component: FormText,
     label: 'First Name',
     validations: {
       required
     }
   },
   lastName: {
-    component: withVuelidate(FormText, useVuelidate),
+    component: FormText,
     label: 'Last Name',
     validations: {
       required
     }
   },
   email: {
-    component: withVuelidate(FormText, useVuelidate),
+    component: FormText,
     label: 'Your email',
     validations: {
       email,

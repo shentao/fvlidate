@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import FormMixin from '@/libs/formvuelatte/FormMixin'
-
 export default {
   props: {
     modelValue: {

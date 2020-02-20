@@ -14,14 +14,16 @@
 
 <script>
 import { ref, computed } from 'vue'
+import SchemaForm from '@/libs/formvuelatte/SchemaForm'
+
+// NOTE 1: Import input components
 import FormText from '@/components/form-elements/FormText'
 import FormSelect from '@/components/form-elements/FormSelect'
 import FormCheckbox from '@/components/form-elements/FormCheckbox'
-import EmailModal from '@/components/form-elements/EmailModal'
-import SchemaForm from '@/libs/formvuelatte/SchemaForm'
 
 const SCHEMA = {
   firstName: {
+    // NOTE 2: Declare component to handle input for this property
     component: FormText,
     label: 'First Name'
   },
@@ -32,6 +34,8 @@ const SCHEMA = {
   email: {
     component: FormText,
     label: 'Your email',
+    // NOTE 3: Config is a catch-all object that
+    // will be spread to the handler  component
     config: {
       type: 'email'
     }

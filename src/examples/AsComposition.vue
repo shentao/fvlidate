@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <div class="w-1/2 bg-gray-200">
-      <div class="max-w-sm mx-auto mt-4 rounded overflow-hidden shadow-lg bg-white">
+      <div class="max-w-sm mx-auto mt-8 rounded overflow-hidden shadow-lg bg-white">
         <div class="px-6 py-4">
           <h3 class="text-2xl font-bold">Create Account</h3>
           <FormText label="Username" type="text" v-model="userName" />
@@ -35,6 +35,7 @@ import { required, minLength, sameAs } from '@/libs/validators/withMessages'
 import FormText from '@/components/form-elements/FormText'
 import ErrorsList from '@/components/ErrorsList'
 
+// NOTE 1: Building custom validators:
 const uniqueUsername = {
   $async: true,
   $validator: v => new Promise(resolve => {
@@ -43,7 +44,8 @@ const uniqueUsername = {
     }, 1200)
   }),
   $message: ({ $pending, $model }) => $pending
-    ? 'Checking username!' : `Sorry, "${$model}" is already in use.`
+    ? 'Checking username!'
+    : `Sorry, "${$model}" is already in use.`
 }
 
 function useSignup ({ passwordMinLength }) {

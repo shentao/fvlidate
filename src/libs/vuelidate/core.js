@@ -109,6 +109,7 @@ function createComputedResult (rule, model, $dirty) {
  */
 function createAsyncResult (rule, model, $pending, $dirty) {
   const $invalid = ref(!!$dirty.value)
+  const $pendingCounter = ref(0)
 
   $pending.value = false
 
@@ -118,16 +119,19 @@ function createAsyncResult (rule, model, $pending, $dirty) {
       if (!$dirty.value) return false
       const ruleResult = callRule(rule, model)
 
-      $pending.value = true
+      $pendingCounter.value++
+      $pending.value = !!$pendingCounter.value
       $invalid.value = true
 
       ruleResult
         .then(data => {
-          $pending.value = false
+          $pendingCounter.value--
+          $pending.value = !!$pendingCounter.value
           $invalid.value = !data
         })
         .catch(() => {
-          $pending.value = false
+          $pendingCounter.value--
+          $pending.value = !!$pendingCounter.value
           $invalid.value = true
         })
     },

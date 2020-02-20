@@ -6,7 +6,7 @@
       <div class="w-1/2">
         <h4 class="font-bold">Form</h4>
         <FormText
-          label="nestedValue"
+          label="Nested Value"
           v-model="nestedValue"
           :config="{ type: 'number' }"
           :invalid="v$.nestedValue.$invalid"
@@ -27,6 +27,7 @@
         />
       </div>
     </div>
+    <!-- NOTE 1: Another child with validations -->
     <NestedB
       :max="maximum"
       :min="minimum"
@@ -58,11 +59,14 @@ export default {
     const rules = {
       nestedValue: {
         required,
+        // NOTE 2: Validator arguments can be reactive
         maxValue: maxValue(maximum),
         minValue: minValue(minimum),
+        // NOTE 3: Automatically trigger $dirty on value change
         $autoDirty: true
       }
     }
+    // NOTE 4: Register validation results under that string
     const v$ = useVuelidate(rules, { nestedValue }, 'NestedForm')
 
     return { nestedValue, v$, maximum, minimum }

@@ -37,6 +37,7 @@ const SCHEMA = {
     }
   },
   emailTemplate: {
+    // NOTE 1: This is a special component
     component: EmailModal
   },
   favoriteThingAboutVue: {
@@ -59,6 +60,7 @@ export default {
   components: { SchemaForm },
   setup () {
     const userData = ref({})
+    // NOTE 2: Schema can be dynamic
     const schema = computed(() => userData.value.isVueFan
       ? {
         ...SCHEMA,

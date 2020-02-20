@@ -40,6 +40,12 @@ import useVuelidate from '@/libs/vuelidate'
 import { required, email } from '@/libs/validators/withMessages'
 import ErrorsList from '@/components/ErrorsList'
 
+// NOTE 3: Lazy validators
+const loggingValidator = v => {
+  console.log('loggingValidator called with: ', v)
+  return true
+}
+
 export default {
   components: { FormText, ErrorsList },
   setup () {
@@ -47,7 +53,7 @@ export default {
 
     const v$ = useVuelidate(
       // NOTE 2: $autoDirty
-      { userEmail: { required, email } },
+      { userEmail: { required, email, loggingValidator } },
       { userEmail }
     )
 

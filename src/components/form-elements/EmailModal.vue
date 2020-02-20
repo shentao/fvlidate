@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { toRefs } from 'vue'
+import { toRefs, ref } from 'vue'
 import FormText from './FormText'
 import Modal from './Modal'
 import useVuelidate from '@/libs/vuelidate'
@@ -33,32 +33,25 @@ import { required, minValue } from '@/libs/validators/withMessages'
 export default {
   components: { Modal, FormText },
   props: {
+    // NOTE 1: Make it compatible with v-model
     modelValue: { required: true },
     schema: { type: Object, required: false }
   },
   setup (props, { emit }) {
+    const modalShown = ref(false)
+    const values = ref({ ...props.modelValue })
     const { modelValue } = toRefs(props)
 
+    return { save, modalShown, values }
+
     function save () {
+      // NOTE 2: Make it compatible with v-model
       emit('update:modelValue', {
-        ...modelValue.value
-      })
-    }
-  },
-  data () {
-    return {
-      modalShown: false,
-      values: { ...this.modelValue }
-    }
-  },
-  methods: {
-    save () {
-      this.$emit('update:modelValue', {
-        ...this.modelValue,
-        ...this.values
+        ...modelValue.value,
+        ...values
       })
 
-      this.modalShown = false
+      modalShown.value = false
     }
   }
 }

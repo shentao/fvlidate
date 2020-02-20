@@ -6,7 +6,7 @@
       class="block"
       :class="[ error.$pending ? 'text-blue-500' : 'text-red-500' ]"
     >
-      {{ error.$message }}
+      {{ customMessage(error) }}
     </span>
   </div>
 </template>
@@ -17,6 +17,10 @@ export default {
     errors: {
       type: Array,
       required: true
+    },
+    customMessage: {
+      type: Function,
+      default: () => err => err.$message
     }
   }
 }

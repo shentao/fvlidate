@@ -17,7 +17,7 @@ import { ref, computed } from 'vue'
 import FormText from '@/components/form-elements/FormText'
 import FormSelect from '@/components/form-elements/FormSelect'
 import FormCheckbox from '@/components/form-elements/FormCheckbox'
-import EmailModal from '@/components/form-elements/EmailModal'
+
 import SchemaForm from '@/libs/formvuelatte/SchemaForm'
 
 const SCHEMA = {
@@ -38,6 +38,7 @@ const SCHEMA = {
     }
   },
   nested: {
+    // NOTE: Nested SchemaForm!
     component: SchemaForm,
     schema: {
       firstName: {

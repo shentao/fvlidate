@@ -32,7 +32,7 @@ export default {
   setup (props) {
     // Get validator params from props
     const { max, min } = toRefs(props)
-    const deeplyNestedValue = ref(8)
+    const deeplyNestedValue = ref(1)
     const rules = {
       deeplyNestedValue: {
         required,
