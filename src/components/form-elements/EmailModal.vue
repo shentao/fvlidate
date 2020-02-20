@@ -1,6 +1,8 @@
 <template>
-  <div class="mt-2 mb-1">
-    <button class="button" type="button" @click="modalShown = !modalShown">Edit Email Contents</button>
+  <div class="mt-4 mb-1">
+    <button class="button" type="button" @click="modalShown = !modalShown">
+      Edit Email Template
+    </button>
 
     <Modal v-if="modalShown">
       <p>Configure your email:</p>

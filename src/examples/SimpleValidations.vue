@@ -9,11 +9,6 @@
         :config="{ type: 'email' }"
       />
       <ErrorsList :errors="v$.$errors" />
-      <!-- <div>
-        <span v-for="(error, index) of v$.$errors" :key="index" class="text-red-500">
-          {{ error.$message }}
-        </span>
-      </div> -->
       <button
         class="button mt-3"
         type="button"
@@ -25,7 +20,7 @@
     </div>
     <div class="w-1/2">
       <h2 class="text-xl">Vuelidate Output:</h2>
-      <pre class="pre">{{ v$ }}</pre>
+      <pre class="pre">v$: {{ v$ }}</pre>
     </div>
   </div>
 </template>

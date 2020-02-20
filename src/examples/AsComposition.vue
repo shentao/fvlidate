@@ -1,64 +1,64 @@
 <template>
-  <div style="padding-top: 2rem;">
-    <div style="margin-bottom: 20px">
-      <FormText label="Minimal password length" type="number" v-model.number="minimumLength" :config="{ type: 'number' }"/>
+  <div class="flex">
+    <div class="w-1/2 bg-gray-200">
+      <div class="max-w-sm mx-auto mt-4 rounded overflow-hidden shadow-lg bg-white">
+        <div class="px-6 py-4">
+          <h3 class="text-2xl font-bold">Create Account</h3>
+          <FormText label="Username" type="text" v-model="userName" />
+          <ErrorsList :errors="v$.userName.$errors" />
+          <FormText label="Password" type="text" v-model="password" />
+          <ErrorsList :errors="v$.password.$errors" />
+          <FormText label="Repeat Password" type="text" v-model="repeatPassword" />
+          <ErrorsList :errors="v$.repeatPassword.$errors" />
+          <button
+            class="button mt-4"
+            type="button"
+            :disabled="v$.$invalid || v$.$pending"
+            @click="signup"
+          >
+            Sign up
+          </button>
+        </div>
+      </div>
     </div>
-    <div style="margin-bottom: 10px">
-      <FormText label="Password: " type="text" v-model="password" />
+    <div class="w-1/2 pl-8">
+      <h2 class="text-xl">Vuelidate Output:</h2>
+      <pre class="pre">v$: {{ v$ }}</pre>
     </div>
-    <div style="margin-bottom: 10px">
-      <FormText label="Repeat Password: " type="text" v-model="repeatPassword" />
-    </div>
-    <button class="button" type="button" @click="v$.$touch">Submit</button>
-    <button class="button" type="button" @click="v$.$reset">Reset</button>
-
-    <div
-      v-for="(error, index) of v$.$errors"
-      :key="index"
-    >
-      <strong>{{ error.$validator }}</strong>
-      <small style="color: black"> on property</small>
-      <strong class="ml-1 text-red-400">{{ error.$property }}</strong>
-      <small style="color: black"> says:</small>
-      <strong class="ml-1 text-red-400">{{ error.$message }}</strong>
-    </div>
-    <pre style="background-color: white;">{{ v$.$errors }}</pre>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import useVuelidate from '@/libs/vuelidate'
-import { required, minLength, sameAs, helpers } from '@/libs/validators/withMessages'
+import { required, minLength, sameAs } from '@/libs/validators/withMessages'
 import FormText from '@/components/form-elements/FormText'
+import ErrorsList from '@/components/ErrorsList'
 
-const { unwrap } = helpers
-
-function $t (key, params) {
-  return {
-    'errors.sameAs': `It has to be the same as ${params}`
-  }[key]
-}
-
-const asyncValidator = {
+const uniqueUsername = {
   $async: true,
   $validator: v => new Promise(resolve => {
     setTimeout(() => {
-      resolve(v === 'aaaa')
-    }, 2000)
+      resolve(v !== 'shentao')
+    }, 1200)
   }),
-  $message: ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`
+  $message: ({ $pending, $model }) => $pending
+    ? 'Checking username!' : `Sorry, "${$model}" is already in use.`
 }
 
-function usePassword ({ minimumLength }) {
+function useSignup ({ passwordMinLength }) {
+  const userName = ref('')
   const password = ref('')
   const repeatPassword = ref('')
 
   const rules = {
+    userName: {
+      required,
+      uniqueUsername
+    },
     password: {
       required,
-      minLength: minLength(minimumLength),
-      asyncValidator
+      minLength: minLength(passwordMinLength)
     },
     repeatPassword: {
       required,
@@ -66,24 +66,33 @@ function usePassword ({ minimumLength }) {
     }
   }
 
-  const v$ = useVuelidate(
-    rules, { password, repeatPassword }, 'usePassword'
-  )
+  const v$ = useVuelidate(rules, { password, repeatPassword, userName })
+
+  const signup = () => {
+    v$.value.$touch()
+    nextTick(() => {
+      if (!v$.value.$invalid && !v$.value.$pending) {
+        alert('Account created!')
+      }
+    })
+  }
 
   return {
     v$,
     password,
-    repeatPassword
+    repeatPassword,
+    signup,
+    userName
   }
 }
 
 export default {
-  components: { FormText },
+  components: { FormText, ErrorsList },
   setup () {
-    const minimumLength = ref(7)
-    const { password, repeatPassword, v$ } = usePassword({ minimumLength })
+    const passwordMinLength = ref(7)
+    const { password, repeatPassword, userName, v$, signup } = useSignup({ passwordMinLength })
 
-    return { password, repeatPassword, v$, minimumLength }
+    return { password, repeatPassword, userName, v$, passwordMinLength, signup }
   }
 }
 </script>

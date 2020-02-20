@@ -110,7 +110,7 @@ function createComputedResult (rule, model, $dirty) {
 function createAsyncResult (rule, model, $pending, $dirty) {
   const $invalid = ref(!!$dirty.value)
 
-  $pending.value = true
+  $pending.value = false
 
   watch(
     [model, $dirty],
@@ -219,8 +219,8 @@ function createValidationResults (rules, state, key, parentKey) {
 
   const result = {
     $dirty,
-    $touch: () => { $dirty.value = true },
-    $reset: () => { $dirty.value = false }
+    $touch: () => { if (!$dirty.value) $dirty.value = true },
+    $reset: () => { if ($dirty.value) $dirty.value = false }
   }
 
   /**

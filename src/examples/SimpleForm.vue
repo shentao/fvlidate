@@ -5,7 +5,10 @@
       :schema="schema"
       v-model="userData"
     />
-    <pre class="w-1/2">{{ userData }}</pre>
+    <div class="w-1/2">
+      <h2 class="text-xl">SchemaForm Value</h2>
+      <pre class="pre">userData: {{ userData }}</pre>
+    </div>
   </div>
 </template>
 

@@ -40,7 +40,7 @@ export default {
         minValue: minValue(min)
       }
     }
-    const v$ = useVuelidate(rules, { deeplyNestedValue }, 'Deeply Nested Form')
+    const v$ = useVuelidate(rules, { deeplyNestedValue }, 'DeeplyNestedForm')
 
     return { deeplyNestedValue, v$ }
   }

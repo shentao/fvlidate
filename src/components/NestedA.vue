@@ -7,7 +7,7 @@
         <h4 class="font-bold">Form</h4>
         <FormText
           label="nestedValue"
-          v-model.number="nestedValue"
+          v-model="nestedValue"
           :config="{ type: 'number' }"
           :invalid="v$.nestedValue.$invalid"
         />
@@ -63,7 +63,7 @@ export default {
         $autoDirty: true
       }
     }
-    const v$ = useVuelidate(rules, { nestedValue }, 'NestedValue')
+    const v$ = useVuelidate(rules, { nestedValue }, 'NestedForm')
 
     return { nestedValue, v$, maximum, minimum }
   }

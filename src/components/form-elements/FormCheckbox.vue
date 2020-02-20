@@ -7,7 +7,7 @@
         :checked="modelValue"
         @input="$emit('update:modelValue', $event.target.checked)"
       >
-      <span class="text-sm">
+      <span>
         {{ label }}
       </span>
     </label>

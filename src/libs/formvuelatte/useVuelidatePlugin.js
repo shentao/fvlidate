@@ -6,15 +6,15 @@ export default function VuelidatePlugin (useVuelidate) {
     const state = toRefs(props).modelValue
 
     const { parsedSchema } = baseReturns
-    const validationRules = parsedSchema.value.reduce((rules, field) => {
-      if (field.validations) {
-        return {
-          ...rules,
-          [field.model]: field.validations
-        }
-      }
-      return rules
-    }, { $autoDirty: true })
+    // const validationRules = parsedSchema.value.reduce((rules, field) => {
+    //   if (field.validations) {
+    //     return {
+    //       ...rules,
+    //       [field.model]: field.validations
+    //     }
+    //   }
+    //   return rules
+    // }, { $autoDirty: true })
 
     // const newBinds = field => ({
     //   ...binds(field),
@@ -23,13 +23,13 @@ export default function VuelidatePlugin (useVuelidate) {
 
     // console.log(validationRules)
 
-    const vResults = useVuelidate({ x: 1 }, { x: { required } })
+    const v$ = useVuelidate()
 
-    emit('update:validations', vResults)
+    emit('update:validations', v$)
 
     return {
       ...baseReturns,
-      vResults: reactive(vResults)
+      v$: reactive(v$)
     }
   }
 }

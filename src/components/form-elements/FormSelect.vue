@@ -1,6 +1,6 @@
 <template>
   <div class="mt-2 mb-1">
-    <label :for="label" class="block">
+    <label :for="label" class="block font-bold">
       {{ label }}
     </label>
     <div class="inline-block relative w-64">

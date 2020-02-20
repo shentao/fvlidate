@@ -41,7 +41,7 @@
 <script>
 import { ref, computed } from 'vue'
 import SimpleForm from '@/examples/SimpleForm'
-import ModalForm from '@/examples/ModalForm'
+import FancyForm from '@/examples/FancyForm'
 import Formception from '@/examples/Formception'
 import SimpleValidations from '@/examples/SimpleValidations'
 import NestedValidations from '@/examples/NestedValidations'
@@ -51,7 +51,7 @@ import FancyPluginExample from '@/examples/FancyPluginExample'
 
 const fvlViews = [
   { comp: SimpleForm, name: 'Simple Schema Form', slug: '#simple-form' },
-  { comp: ModalForm, name: 'Fancy Schema Form', slug: '#modal-form' },
+  { comp: FancyForm, name: 'Fancy Schema Form', slug: '#fancy-form' },
   { comp: Formception, name: 'Formception', slug: '#formception-form' }
 ]
 
@@ -101,6 +101,7 @@ export default {
 <style lang="stylus">
 .pre
   @apply p-3 bg-gray-800 text-green-200 overflow-auto
+  max-height: 70vh
 
 .button
   @apply bg-green-500 text-white font-bold py-2 px-4 mb-2 mr-2 rounded inline-block

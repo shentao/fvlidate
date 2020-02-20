@@ -18,14 +18,17 @@
       </template>
     </SchemaFormWithValidations>
     <div class="w-1/2">
-      <pre>{{ userData }}</pre>
-      <pre>{{ validations }}</pre>
+      <h2 class="text-xl">SchemaForm value</h2>
+      <pre class="pre">userData: {{ userData }}</pre>
+      <h2 class="text-xl">Validations results</h2>
+      <pre class="pre">{{ validations }}</pre>
     </div>
   </div>
 </template>
 
 <script>
 import FormText from '@/components/form-elements/FormText'
+import ErrorsList from '@/components/ErrorsList'
 import SchemaFormFactory from '@/libs/formvuelatte/SchemaFormFactory'
 import useVuelidate from '@/libs/vuelidate'
 import VuelidatePlugin from '@/libs/formvuelatte/useVuelidatePlugin'
@@ -62,9 +65,10 @@ const withVuelidate = (Comp, useVuelidate) => ({
     return h('div', {}, [
       h(Comp, {
         ...this.props,
-        ...this.attrs
+        ...this.attrs,
+        invalid: this.v$.$invalid
       }),
-      this.v$.$errors.map(error => h('small', { class: 'block mb-2' }, `${error.$message}`))
+      h(ErrorsList, { errors: this.v$.$errors })
     ])
   }
 })
@@ -87,10 +91,6 @@ const SCHEMA = {
   email: {
     component: withVuelidate(FormText, useVuelidate),
     label: 'Your email',
-    required: true,
-    config: {
-      type: 'email'
-    },
     validations: {
       email,
       required

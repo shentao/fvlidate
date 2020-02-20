@@ -18,8 +18,8 @@
       </template>
     </SchemaFormWithValidations>
     <div class="w-1/2">
-      <pre>{{ userData }}</pre>
-      <pre>{{ validations }}</pre>
+      <pre>userData: {{ userData }}</pre>
+      <pre>v$: {{ validations }}</pre>
     </div>
   </div>
 </template>
