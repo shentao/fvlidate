@@ -2,11 +2,11 @@
   <div class="flex">
     <div class="w-1/2">
       <h2 class="text-xl">Form</h2>
+      <!-- NOTE 1: Using $model -->
       <FormText
         label="Email"
-        v-model="v$.userEmail.$model"
+        v-model="userEmail"
         :invalid="v$.userEmail.$invalid"
-        :config="{ type: 'email' }"
       />
       <ErrorsList :errors="v$.$errors" />
       <button
@@ -16,6 +16,14 @@
         @click="v$.$touch"
       >
         Submit (with $touch)
+      </button>
+
+      <button
+        class="button mt-3 button-secondary"
+        type="button"
+        @click="v$.$reset"
+      >
+        $reset
       </button>
     </div>
     <div class="w-1/2">
@@ -38,6 +46,7 @@ export default {
     const userEmail = ref('')
 
     const v$ = useVuelidate(
+      // NOTE 2: $autoDirty
       { userEmail: { required, email } },
       { userEmail }
     )

@@ -5,7 +5,7 @@
         v-for="view of vldViews"
         :key="view.name"
         :href="view.slug"
-        class="button mr-2"
+        class="button mr-2 button-teal"
         :class="[ isCurrent(view.slug) && 'active' ]"
       >
         {{ view.name }}
@@ -70,9 +70,11 @@ export default {
   setup () {
     const currentViewSlug = ref(location.hash)
     const comboViewsEnabled = ref(true)
+    const visited = ref([location.hash])
 
     window.addEventListener('hashchange', (...a) => {
       currentViewSlug.value = location.hash
+      visited.value.push(location.hash)
     })
 
     const allViews = fvlViews.concat(vldViews, comboViews)
@@ -92,7 +94,11 @@ export default {
     }
 
     function isCurrent (slug) {
-      return slug === currentViewSlug.value
+      return slug === currentViewSlug.value || isVisited(slug)
+    }
+
+    function isVisited (slug) {
+      return visited.value.includes(slug)
     }
   }
 }
@@ -115,8 +121,14 @@ export default {
   &.active
     @apply text-white
 
+.button-teal
+  @apply bg-teal-500 text-teal-500
+
+  &:hover
+    @apply bg-teal-700
+
 .button-blue
-  @apply bg-blue-500
+  @apply bg-blue-500 text-blue-500
 
   &:hover
     @apply bg-blue-700
@@ -127,9 +139,15 @@ export default {
   &:hover
     @apply bg-purple-700
 
+.button-secondary
+  @apply bg-gray-300 text-gray-700
+
+  &:hover
+    @apply bg-gray-200 text-gray-900
+
 #app
   @apply p-4
-  font-family Avenir, Helvetica, Arial, sans-serif
+  font-family Lato, Avenir, Helvetica, Arial, sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   color #2c3e50
