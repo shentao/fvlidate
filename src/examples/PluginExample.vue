@@ -4,24 +4,23 @@
       class="w-1/2"
       :schema="schema"
       v-model="userData"
-      @update:validations="updateValidations"
     >
       <template #afterForm>
         <button
           type="button"
           class="button mt-3"
-          :disabled="validations.$invalid"
-          @click="validations.$touch"
+          :disabled="v$.$invalid"
+          @click="v$.$touch"
         >
           Submit
         </button>
       </template>
     </SchemaFormWithValidations>
     <div class="w-1/2">
-      <h2 class="text-xl">SchemaForm value</h2>
+      <h2 class="text-xl">SchemaForm Value</h2>
       <pre class="pre">userData: {{ userData }}</pre>
-      <h2 class="text-xl">Validations results</h2>
-      <pre class="pre">{{ validations }}</pre>
+      <h2 class="text-xl">Vuelidate Output</h2>
+      <pre class="pre">{{ v$ }}</pre>
     </div>
   </div>
 </template>
@@ -38,7 +37,7 @@ import { ref, h, watch, toRefs } from 'vue'
 
 const SchemaFormWithValidations = SchemaFormFactory([
   WithErrorsPlugin(ErrorsList),
-  VuelidatePlugin(useVuelidate)
+  VuelidatePlugin
 ])
 
 const SCHEMA = {
@@ -79,17 +78,13 @@ export default {
       userData.value = value
     }
 
-    const validations = ref({})
-    const updateValidations = v => {
-      validations.value = v.value
-    }
+    const v$ = useVuelidate()
 
     return {
       schema: SCHEMA,
       userData,
       updateUserData,
-      validations,
-      updateValidations
+      v$
     }
   }
 }

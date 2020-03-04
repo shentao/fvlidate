@@ -1,32 +1,26 @@
 import { toRefs, isRef, reactive, watch, h } from 'vue'
 import { required } from '@/libs/validators/withMessages'
-const unwrap = v => isRef(v) ? v.value : v
+import useVuelidate from '@/libs/vuelidate'
 
-export default function VuelidatePlugin (useVuelidate) {
-  return function (baseReturns, props, { emit }) {
-    // Take the parsed schema from SchemaForm setup returns
-    const { parsedSchema } = baseReturns
+export default function VuelidatePlugin (baseReturns, props) {
+  // Take the parsed schema from SchemaForm setup returns
+  const { parsedSchema } = baseReturns
 
-    // Wrap all components with the "withVuelidate" component
-    const schemaWithVuelidate = unwrap(parsedSchema).map(el => {
-      return {
-        ...el,
-        component: withVuelidate(el.component, useVuelidate)
-      }
-    })
-
-    const v$ = useVuelidate()
-    emit('update:validations', v$)
-
+  // Wrap all components with the "withVuelidate" component
+  const schemaWithVuelidate = parsedSchema.map(el => {
     return {
-      ...baseReturns,
-      parsedSchema: schemaWithVuelidate,
-      v$: reactive(v$)
+      ...el,
+      component: withVuelidate(el.component)
     }
+  })
+
+  return {
+    ...baseReturns,
+    parsedSchema: schemaWithVuelidate
   }
 }
 
-export function withVuelidate (Comp, useVuelidate) {
+export function withVuelidate (Comp) {
   return {
     setup (props, { attrs }) {
       const { validations, modelValue, model } = toRefs(props)

@@ -1,6 +1,6 @@
 import SchemaForm from './SchemaForm'
 
-export default function SchemaFormFactory (plugins = [], config) {
+export default function SchemaFormFactory (plugins = []) {
   // Copy the original SchemaForm setup
   const originalSetup = SchemaForm.setup
 
@@ -12,9 +12,12 @@ export default function SchemaFormFactory (plugins = [], config) {
     else {
       // Apply plugins on the data returned
       // by the original Schemaform
-      return plugins.reduce((schemaFormReturns, plugin) => {
-        return plugin(schemaFormReturns, props, context)
-      }, baseSchemaFormReturns)
+      return plugins.reduce(
+        (schemaFormReturns, plugin) => {
+          return plugin(schemaFormReturns, props, context)
+        },
+        baseSchemaFormReturns
+      )
     }
   }
 

@@ -47,7 +47,6 @@ import SimpleValidations from '@/examples/SimpleValidations'
 import NestedValidations from '@/examples/NestedValidations'
 import AsComposition from '@/examples/AsComposition'
 import PluginExample from '@/examples/PluginExample'
-import FancyPluginExample from '@/examples/FancyPluginExample'
 
 const fvlViews = [
   { comp: SimpleForm, name: 'Simple Schema Form', slug: '#simple-form' },
@@ -56,14 +55,13 @@ const fvlViews = [
 ]
 
 const vldViews = [
-  { comp: SimpleValidations, name: 'Simple Validations', slug: '#simple-vuelidate' },
+  { comp: SimpleValidations, name: 'Lazy Validations', slug: '#simple-vuelidate' },
   { comp: NestedValidations, name: 'Nested Validations', slug: '#nested-vuelidate' },
   { comp: AsComposition, name: 'Composition API', slug: '#composition-api' }
 ]
 
 const comboViews = [
-  { comp: PluginExample, name: 'FormVueLatte + Vuelidate', slug: '#form-vue-latte-vuelidate' },
-  { comp: FancyPluginExample, name: 'Fancy FormVueLatte + Vuelidate', slug: '#fancy-form-vue-latte-vuelidate' }
+  { comp: PluginExample, name: 'FormVueLatte + Vuelidate', slug: '#form-vue-latte-vuelidate' }
 ]
 
 export default {

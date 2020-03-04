@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <div class="w-1/2">
+    <div class="w-2/3">
       <fieldset class="p-2 m-2 border border-black">
         <h3 class="text-lg">Wrapper Form</h3>
         <!-- NOTE 2: Child component with validations -->
@@ -17,7 +17,7 @@
         <ErrorsList :errors="v$.$errors" :custom-message="messageWithProperty" />
       </fieldset>
     </div>
-    <div class="w-1/2">
+    <div class="w-1/3">
       <h2 class="text-xl">Vuelidate Output:</h2>
       <pre class="pre">v$: {{ v$ }}</pre>
     </div>

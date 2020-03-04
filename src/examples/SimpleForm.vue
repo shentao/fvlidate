@@ -18,7 +18,6 @@ import SchemaForm from '@/libs/formvuelatte/SchemaForm'
 
 // NOTE 1: Import input components
 import FormText from '@/components/form-elements/FormText'
-import FormSelect from '@/components/form-elements/FormSelect'
 import FormCheckbox from '@/components/form-elements/FormCheckbox'
 
 const SCHEMA = {

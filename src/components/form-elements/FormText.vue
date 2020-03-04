@@ -10,6 +10,7 @@
       :required="required"
       :id="label"
       :disabled="readOnly"
+      autocomplete="off"
       @input="$emit('update:modelValue', $event.target.value)"
     >
   </div>

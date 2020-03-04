@@ -1,21 +1,14 @@
 <template lang="html">
   <fieldset class="p-2 m-2 border border-black">
-    <h3 class="text-lg">Nested Form B</h3>
-    <div class="flex">
-      <div class="w-1/2">
-        <h4 class="font-bold">Form</h4>
-        <FormText
-          label="Deeply Nested Value"
-          v-model.number="deeplyNestedValue"
-          :config="{ type: 'number' }"
-          :invalid="v$.$invalid"
-        />
-        <ErrorsList :errors="v$.deeplyNestedValue.$errors" />
-      </div>
-      <div class="w-1/2">
-        <h4 class="font-bold">Rules coming from parent component</h4>
-      </div>
-    </div>
+    <h3 class="text-lg">Nested Component B</h3>
+    <h4 class="font-bold">Form</h4>
+    <FormText
+      label="Deeply Nested Value"
+      v-model.number="deeplyNestedValue"
+      :config="{ type: 'number' }"
+      :invalid="v$.$invalid"
+    />
+    <ErrorsList :errors="v$.deeplyNestedValue.$errors" />
   </fieldset>
 </template>
 

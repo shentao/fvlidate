@@ -4,11 +4,13 @@
       <div class="max-w-sm mx-auto mt-8 rounded overflow-hidden shadow-lg bg-white">
         <div class="px-6 py-4">
           <h3 class="text-2xl font-bold">Create Account</h3>
-          <FormText label="Username" type="text" v-model="userName" />
+          <FormText label="Username" type="text" v-model="userName" :invalid="v$.userName.$invalid"/>
           <ErrorsList :errors="v$.userName.$errors" />
-          <FormText label="Password" type="text" v-model="password" />
+
+          <FormText label="Password" type="text" v-model="password" :invalid="v$.password.$invalid"/>
           <ErrorsList :errors="v$.password.$errors" />
-          <FormText label="Repeat Password" type="text" v-model="repeatPassword" />
+
+          <FormText label="Repeat Password" type="text" v-model="repeatPassword" :invalid="v$.repeatPassword.$invalid"/>
           <ErrorsList :errors="v$.repeatPassword.$errors" />
           <button
             class="button mt-4"

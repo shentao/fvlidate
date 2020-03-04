@@ -1,6 +1,6 @@
 <template lang="html">
   <fieldset class="p-2 m-2 mb-4 border border-black">
-    <h3 class="text-lg">Nested Form B</h3>
+    <h3 class="text-lg">Nested Component A</h3>
     <hr class="my-2">
     <div class="flex">
       <div class="w-1/2">
