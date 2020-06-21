@@ -1,8 +1,9 @@
-import { h, isRef, markRaw } from 'vue'
+import { h, isRef, markRaw, unref } from 'vue'
 
 export default function WithErrorsPlugin (ErrorsListComp) {
   return function (baseReturns, props) {
     const { parsedSchema } = baseReturns
+
     const schemaWithErrorsList = parsedSchema.value.map(el => {
       return {
         ...el,
@@ -17,13 +18,12 @@ export default function WithErrorsPlugin (ErrorsListComp) {
   }
 
   function withErrorsComponent (Comp) {
-    return (props, { attrs }) => {
-      const errors = props.vResults.$errors
+    return (props) => {
+      const errors = props.vuelidateResults.value.$errors
 
       return [
         h(Comp, {
           ...props,
-          ...attrs,
           invalid: !!errors.length
         }),
         h(ErrorsListComp, { errors })

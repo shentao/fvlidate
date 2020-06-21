@@ -1,4 +1,4 @@
-import SchemaForm from './SchemaForm'
+import SchemaForm from './SchemaForm.vue'
 
 export default function SchemaFormFactory (plugins = []) {
   // Copy the original SchemaForm setup

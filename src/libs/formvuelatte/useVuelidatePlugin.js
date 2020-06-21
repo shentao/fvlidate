@@ -1,16 +1,15 @@
-import { toRefs, isRef, reactive, watch, h } from 'vue'
-import { required } from '@/libs/validators/withMessages'
-import useVuelidate from '@/libs/vuelidate'
+import { h, markRaw, toRefs, unref } from 'vue'
+import useVuelidate from '../vuelidate/index.js'
 
-export default function VuelidatePlugin (baseReturns, props) {
+export default function VuelidatePlugin (baseReturns) {
   // Take the parsed schema from SchemaForm setup returns
   const { parsedSchema } = baseReturns
 
   // Wrap all components with the "withVuelidate" component
-  const schemaWithVuelidate = parsedSchema.map(el => {
+  const schemaWithVuelidate = unref(parsedSchema).map(el => {
     return {
       ...el,
-      component: withVuelidate(el.component)
+      component: markRaw(withVuelidate(el.component))
     }
   })
 
@@ -22,30 +21,22 @@ export default function VuelidatePlugin (baseReturns, props) {
 
 export function withVuelidate (Comp) {
   return {
+    props: ['model', 'modelValue', 'validations'],
     setup (props, { attrs }) {
-      const { validations, modelValue, model } = toRefs(props)
+      const { model, validations, modelValue } = toRefs(props)
       const propertyName = model.value
 
       // Setup validation results for that schema leaf
-      const vResults = useVuelidate(
+      const vuelidateResults = useVuelidate(
         { [propertyName]: validations.value },
         { [propertyName]: modelValue },
         propertyName
       )
 
-      return {
-        vResults,
-        props,
-        attrs
-      }
-    },
-    render () {
-      // It renders the original component with the
-      // validation results as props
-      return h(Comp, {
-        ...this.props,
-        ...this.attrs,
-        vResults: this.vResults
+      return () => h(Comp, {
+        ...props,
+        ...attrs,
+        vuelidateResults
       })
     }
   }

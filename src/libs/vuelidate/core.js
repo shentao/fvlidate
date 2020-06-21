@@ -116,7 +116,6 @@ function createComputedResult (rule, model, $dirty) {
  * @return {Ref<Boolean>}
  */
 function createAsyncResult (rule, model, $pending, $dirty) {
-  console.log('model', model);
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
