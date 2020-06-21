@@ -41,10 +41,10 @@
 
 <script>
 import { ref, computed } from 'vue'
-import FormText from '@/components/form-elements/FormText'
-import useVuelidate from '@/libs/vuelidate'
-import { required, email, minLength } from '@/libs/validators/withMessages'
-import ErrorsList from '@/components/ErrorsList'
+import FormText from '../components/form-elements/FormText.vue'
+import useVuelidate from '../libs/vuelidate/index.js'
+import { required, email, minLength } from '../libs/validators/withMessages/index.js'
+import ErrorsList from '../components/ErrorsList.vue'
 
 // NOTE 3: Lazy validators
 const logger = v => {
@@ -72,7 +72,10 @@ export default {
           minLength: minLength(7)
         }
       },
-      { userEmail, password }
+      {
+        userEmail,
+        password
+      }
     )
 
     return { v$, userEmail, password, submit }

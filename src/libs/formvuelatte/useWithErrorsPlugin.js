@@ -1,4 +1,4 @@
-import { h, isRef } from 'vue'
+import { h, isRef, markRaw } from 'vue'
 
 export default function WithErrorsPlugin (ErrorsListComp) {
   return function (baseReturns, props) {
@@ -6,7 +6,7 @@ export default function WithErrorsPlugin (ErrorsListComp) {
     const schemaWithErrorsList = parsedSchema.value.map(el => {
       return {
         ...el,
-        component: withErrorsComponent(el.component)
+        component: markRaw(withErrorsComponent(el.component))
       }
     })
 

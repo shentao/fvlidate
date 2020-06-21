@@ -26,10 +26,10 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useVuelidate from '@/libs/vuelidate'
-import NestedA from '@/components/NestedA'
-import ErrorsList from '@/components/ErrorsList'
-import { required, email } from '@/libs/validators/withMessages'
+import useVuelidate from '../libs/vuelidate/index.js'
+import NestedA from '../components/NestedA.vue'
+import ErrorsList from '../components/ErrorsList.vue'
+import { required, email } from '../libs/validators/withMessages/index.js'
 
 export default {
   components: { NestedA, ErrorsList },

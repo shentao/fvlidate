@@ -13,24 +13,24 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
-import FormText from '@/components/form-elements/FormText'
-import FormSelect from '@/components/form-elements/FormSelect'
-import FormCheckbox from '@/components/form-elements/FormCheckbox'
+import { ref, computed, markRaw } from 'vue'
+import FormText from '../components/form-elements/FormText.vue'
+import FormSelect from '../components/form-elements/FormSelect.vue'
+import FormCheckbox from '../components/form-elements/FormCheckbox.vue'
 
-import SchemaForm from '@/libs/formvuelatte/SchemaForm'
+import SchemaForm from '../libs/formvuelatte/SchemaForm.vue'
 
 const SCHEMA = {
   firstName: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'First Name'
   },
   lastName: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'Last Name'
   },
   email: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'Email',
     required: true,
     config: {
@@ -39,18 +39,18 @@ const SCHEMA = {
   },
   nested: {
     // NOTE: Nested SchemaForm!
-    component: SchemaForm,
+    component: markRaw(SchemaForm),
     schema: {
       firstName: {
-        component: FormText,
+        component: markRaw(FormText),
         label: 'Nested First Name'
       },
       lastName: {
-        component: FormText,
+        component: markRaw(FormText),
         label: 'Nested Last Name'
       },
       email: {
-        component: FormText,
+        component: markRaw(FormText),
         label: 'Nested Email',
         required: true,
         config: {
@@ -60,7 +60,7 @@ const SCHEMA = {
     }
   },
   isVueFan: {
-    component: FormCheckbox,
+    component: markRaw(FormCheckbox),
     label: 'Are you a Vue fan?'
   }
 }

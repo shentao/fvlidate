@@ -32,10 +32,10 @@
 
 <script>
 import { ref, nextTick } from 'vue'
-import useVuelidate from '@/libs/vuelidate'
-import { required, minLength, sameAs } from '@/libs/validators/withMessages'
-import FormText from '@/components/form-elements/FormText'
-import ErrorsList from '@/components/ErrorsList'
+import useVuelidate from '../libs/vuelidate/index.js'
+import { required, minLength, sameAs } from '../libs/validators/withMessages/index.js'
+import FormText from '../components/form-elements/FormText.vue'
+import ErrorsList from '../components/ErrorsList.vue'
 
 // NOTE 1: Building custom validators:
 const uniqueUsername = {

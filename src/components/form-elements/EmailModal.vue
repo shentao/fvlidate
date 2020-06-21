@@ -25,10 +25,10 @@
 
 <script>
 import { toRefs, ref } from 'vue'
-import FormText from './FormText'
-import Modal from './Modal'
-import useVuelidate from '@/libs/vuelidate'
-import { required, minValue } from '@/libs/validators/withMessages'
+import FormText from './FormText.vue'
+import Modal from './Modal.vue'
+import useVuelidate from '../../libs/vuelidate/index.js'
+import { required, minValue } from '../../libs/validators/withMessages'
 
 export default {
   components: { Modal, FormText },

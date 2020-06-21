@@ -1,39 +1,43 @@
 <template>
   <div class="flex">
     <SchemaFormWithValidations
+      v-model="userData"
       class="w-1/2"
       :schema="schema"
-      v-model="userData"
     >
       <template #afterForm>
         <button
           type="button"
           class="button mt-3"
-          :disabled="v$.$invalid"
-          @click="v$.$touch"
+          :disabled="$v.$invalid"
+          @click="$v.$touch"
         >
           Submit
         </button>
       </template>
     </SchemaFormWithValidations>
     <div class="w-1/2">
-      <h2 class="text-xl">SchemaForm Value</h2>
+      <h2 class="text-xl">
+        SchemaForm Value
+      </h2>
       <pre class="pre">userData: {{ userData }}</pre>
-      <h2 class="text-xl">Vuelidate Output</h2>
-      <pre class="pre">{{ v$ }}</pre>
+      <h2 class="text-xl">
+        Vuelidate Output
+      </h2>
+      <pre class="pre">{{ $v }}</pre>
     </div>
   </div>
 </template>
 
 <script>
-import FormText from '@/components/form-elements/FormText'
-import ErrorsList from '@/components/ErrorsList'
-import SchemaFormFactory from '@/libs/formvuelatte/SchemaFormFactory'
-import useVuelidate from '@/libs/vuelidate'
-import VuelidatePlugin from '@/libs/formvuelatte/useVuelidatePlugin'
-import WithErrorsPlugin from '@/libs/formvuelatte/useWithErrorsPlugin'
-import { required, email } from '@/libs/validators/withMessages'
-import { ref, h, watch, toRefs } from 'vue'
+import { ref, markRaw } from 'vue'
+import FormText from '../components/form-elements/FormText.vue'
+import ErrorsList from '../components/ErrorsList.vue'
+import SchemaFormFactory from '../libs/formvuelatte/SchemaFormFactory.js'
+import useVuelidate from '../libs/vuelidate/index.js'
+import VuelidatePlugin from '../libs/formvuelatte/useVuelidatePlugin.js'
+import WithErrorsPlugin from '../libs/formvuelatte/useWithErrorsPlugin.js'
+import { required, email } from '../libs/validators/withMessages/index.js'
 
 const SchemaFormWithValidations = SchemaFormFactory([
   WithErrorsPlugin(ErrorsList),
@@ -42,21 +46,21 @@ const SchemaFormWithValidations = SchemaFormFactory([
 
 const SCHEMA = {
   firstName: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'First Name',
     validations: {
       required
     }
   },
   lastName: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'Last Name',
     validations: {
       required
     }
   },
   email: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'Your email',
     validations: {
       email,
@@ -78,13 +82,13 @@ export default {
       userData.value = value
     }
 
-    const v$ = useVuelidate()
+    const $v = useVuelidate()
 
     return {
       schema: SCHEMA,
       userData,
       updateUserData,
-      v$
+      $v
     }
   }
 }
