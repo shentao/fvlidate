@@ -3,14 +3,31 @@
     <div class="w-1/2 bg-gray-200">
       <div class="max-w-sm mx-auto mt-8 rounded overflow-hidden shadow-lg bg-white">
         <div class="px-6 py-4">
-          <h3 class="text-2xl font-bold">Create Account</h3>
-          <FormText label="Username" type="text" v-model="userName" :invalid="v$.userName.$invalid"/>
+          <h3 class="text-2xl font-bold">
+            Create Account
+          </h3>
+          <FormText
+            v-model="userName"
+            label="Username"
+            type="text"
+            :invalid="v$.userName.$invalid"
+          />
           <ErrorsList :errors="v$.userName.$errors" />
 
-          <FormText label="Password" type="text" v-model="password" :invalid="v$.password.$invalid"/>
+          <FormText
+            v-model="password"
+            label="Password"
+            type="text"
+            :invalid="v$.password.$invalid"
+          />
           <ErrorsList :errors="v$.password.$errors" />
 
-          <FormText label="Repeat Password" type="text" v-model="repeatPassword" :invalid="v$.repeatPassword.$invalid"/>
+          <FormText
+            v-model="repeatPassword"
+            label="Repeat Password"
+            type="text"
+            :invalid="v$.repeatPassword.$invalid"
+          />
           <ErrorsList :errors="v$.repeatPassword.$errors" />
           <button
             class="button mt-4"
@@ -24,7 +41,9 @@
       </div>
     </div>
     <div class="w-1/2 pl-8">
-      <h2 class="text-xl">Vuelidate Output:</h2>
+      <h2 class="text-xl">
+        Vuelidate Output:
+      </h2>
       <pre class="pre">v$: {{ v$ }}</pre>
     </div>
   </div>
