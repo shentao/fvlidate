@@ -1,14 +1,20 @@
 <template>
-  <div class="mt-2 mb-1" :class="invalid && 'has-errors'">
-    <label :for="label" class="font-bold">
+  <div
+    class="mt-2 mb-1"
+    :class="invalid && 'has-errors'"
+  >
+    <label
+      :for="label"
+      class="font-bold"
+    >
       {{ label }}
     </label>
     <input
+      :id="label"
       class="input"
       :value="modelValue"
       :type="config.type"
       :required="required"
-      :id="label"
       :disabled="readOnly"
       autocomplete="off"
       @input="$emit('update:modelValue', $event.target.value)"
@@ -27,7 +33,10 @@ export default {
       type: Boolean,
       default: () => false
     },
-    modelValue: { required: true },
+    modelValue: {
+      type: [String, Number],
+      default: ''
+    },
     label: {
       type: String,
       required: true
