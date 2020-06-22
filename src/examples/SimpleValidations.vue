@@ -1,17 +1,22 @@
 <template>
   <div class="flex">
-    <form class="w-1/2" @submit.prevent="submit">
-      <h2 class="text-xl">Form</h2>
+    <form
+      class="w-1/2"
+      @submit.prevent="submit"
+    >
+      <h2 class="text-xl">
+        Form
+      </h2>
       <!-- NOTE 1: Using $model for auto dirty-->
       <FormText
-        label="Email"
         v-model="userEmail"
+        label="Email"
         :invalid="v$.userEmail.$invalid"
       />
       <ErrorsList :errors="v$.userEmail.$errors" />
       <FormText
-        label="Password"
         v-model="v$.password.$model"
+        label="Password"
         :invalid="v$.password.$invalid"
         :config="{ type: 'password' }"
       />
@@ -33,14 +38,16 @@
       </button>
     </form>
     <div class="w-1/2">
-      <h2 class="text-xl">Vuelidate Output:</h2>
+      <h2 class="text-xl">
+        Vuelidate Output:
+      </h2>
       <pre class="pre">v$: {{ v$ }}</pre>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import FormText from '../components/form-elements/FormText.vue'
 import useVuelidate from '../libs/vuelidate/index.js'
 import { required, email, minLength } from '../libs/validators/withMessages/index.js'
