@@ -1,23 +1,21 @@
-import { h, markRaw } from 'vue'
+import { h, markRaw, computed } from 'vue'
 
-export default function WithErrorsPlugin (ErrorsListComp) {
-  return function (baseReturns, props) {
-    const { parsedSchema } = baseReturns
+export default function ErrorsPlugin (ErrorsListComp) {
+  return function (setupOutput) {
+    const { parsedSchema } = setupOutput
 
-    const schemaWithErrorsList = parsedSchema.value.map(el => {
-      return {
-        ...el,
-        component: markRaw(withErrorsComponent(el.component))
-      }
-    })
+    const schemaWithErrorsList = computed(() => parsedSchema.value.map(el => ({
+      ...el,
+      component: markRaw(withErrors(el.component))
+    })))
 
     return {
-      ...baseReturns,
+      ...setupOutput,
       parsedSchema: schemaWithErrorsList
     }
   }
 
-  function withErrorsComponent (Comp) {
+  function withErrors (Comp) {
     return (props) => {
       const errors = props.vuelidateResults.value.$errors
 
