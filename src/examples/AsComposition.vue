@@ -3,12 +3,31 @@
     <div class="w-1/2 bg-gray-200">
       <div class="max-w-sm mx-auto mt-8 rounded overflow-hidden shadow-lg bg-white">
         <div class="px-6 py-4">
-          <h3 class="text-2xl font-bold">Create Account</h3>
-          <FormText label="Username" type="text" v-model="userName" />
+          <h3 class="text-2xl font-bold">
+            Create Account
+          </h3>
+          <FormText
+            v-model="userName"
+            label="Username"
+            type="text"
+            :invalid="v$.userName.$invalid"
+          />
           <ErrorsList :errors="v$.userName.$errors" />
-          <FormText label="Password" type="text" v-model="password" />
+
+          <FormText
+            v-model="password"
+            label="Password"
+            type="text"
+            :invalid="v$.password.$invalid"
+          />
           <ErrorsList :errors="v$.password.$errors" />
-          <FormText label="Repeat Password" type="text" v-model="repeatPassword" />
+
+          <FormText
+            v-model="repeatPassword"
+            label="Repeat Password"
+            type="text"
+            :invalid="v$.repeatPassword.$invalid"
+          />
           <ErrorsList :errors="v$.repeatPassword.$errors" />
           <button
             class="button mt-4"
@@ -22,7 +41,9 @@
       </div>
     </div>
     <div class="w-1/2 pl-8">
-      <h2 class="text-xl">Vuelidate Output:</h2>
+      <h2 class="text-xl">
+        Vuelidate Output:
+      </h2>
       <pre class="pre">v$: {{ v$ }}</pre>
     </div>
   </div>
@@ -30,10 +51,10 @@
 
 <script>
 import { ref, nextTick } from 'vue'
-import useVuelidate from '@/libs/vuelidate'
-import { required, minLength, sameAs } from '@/libs/validators/withMessages'
-import FormText from '@/components/form-elements/FormText'
-import ErrorsList from '@/components/ErrorsList'
+import useVuelidate from '../libs/vuelidate/index.js'
+import { required, minLength, sameAs } from '../libs/validators/withMessages/index.js'
+import FormText from '../components/form-elements/FormText.vue'
+import ErrorsList from '../components/ErrorsList.vue'
 
 // NOTE 1: Building custom validators:
 const uniqueUsername = {

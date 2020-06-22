@@ -11,6 +11,7 @@
         :id="label"
         @input="$emit('update:modelValue', $event.target.value)"
       >
+        <option>-</option>
         <option
           v-for="option in options"
           :key="option"

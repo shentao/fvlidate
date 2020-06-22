@@ -1,4 +1,4 @@
-import { isRef } from 'vue'
+import { unref } from 'vue'
 
 export function isFunction (val) {
   return typeof val === 'function'
@@ -14,7 +14,7 @@ export function isObject (o) {
  * @return {*}
  */
 export function unwrap (val) {
-  return isRef(val) ? val.value : val
+  return unref(val)
 }
 
 /**
@@ -43,4 +43,10 @@ export function isTruthy (prop) {
 
 export function isPromise (object) {
   return isObject(object) && isFunction(object.then)
+}
+
+export function withAsync (validator) {
+  const normalized = normalizeValidatorObject(validator)
+  normalized.$async = true
+  return normalized
 }

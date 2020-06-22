@@ -1,6 +1,6 @@
-import { provide, inject, ref, computed, reactive } from 'vue'
-import { unwrap, isFunction } from './utils'
-import { setValidations } from './core'
+import { provide, inject, ref, computed } from 'vue'
+import { unwrap, isFunction } from './utils.js'
+import { setValidations } from './core.js'
 
 const VuelidateSymbol = Symbol('vuelidate')
 
@@ -12,13 +12,13 @@ const VuelidateSymbol = Symbol('vuelidate')
  * @param {String} registerAs
  * @return {UnwrapRef<*>}
  */
-export default function useVuelidate (validationsArg = {}, state = {}, registerAs) {
-  const validations = unwrap(validationsArg)
+export function useVuelidate (validations, state, registerAs) {
+  const resultsStorage = new Map()
 
   const childResultsRaw = {}
   const childResultsKeys = ref([])
   const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
-    results[key] = childResultsRaw[key]
+    results[key] = childResultsRaw[key].value
     return results
   }, {}))
   const injectToParent = inject(VuelidateSymbol, () => {})
@@ -29,28 +29,25 @@ export default function useVuelidate (validationsArg = {}, state = {}, registerA
     childResultsKeys.value.push(key)
   }
 
-  const validationResults = setValidations({
-    validations,
+  const validationResults = computed(() => setValidations({
+    validations: unwrap(validations),
     state,
-    childResults
-  })
+    childResults,
+    resultsStorage
+  }))
 
   if (registerAs) {
     injectToParent(validationResults, registerAs)
   }
 
-  const results = computed(() => {
-    if (registerAs && childResultsKeys.value.length) {
-      return reactive({
-        ...validationResults,
-        ...childResults
-      })
-    } else {
-      return validationResults
-    }
-  })
-
-  return results
+  if (registerAs && childResultsKeys.value.length) {
+    return computed(() => ({
+      ...validationResults.value,
+      ...childResults.value
+    }))
+  } else {
+    return validationResults
+  }
 }
 
 /**
@@ -58,22 +55,30 @@ export default function useVuelidate (validationsArg = {}, state = {}, registerA
  * Relies on `validations` option to be defined on component instance
  * @type {ComponentOptions}
  */
+
 export const VuelidateMixin = {
   beforeCreate () {
+    const resultsStorage = new Map()
     const options = this.$options
     if (!options.validations) return
-
-    const validations = isFunction(options.validations)
-      ? options.validations.call(this)
-      : options.validations
 
     if (!options.computed) options.computed = {}
     if (options.computed.$v) return
 
-    options.computed.$v = () => setValidations({
-      validations,
-      state: this
-    })
+    const validations = computed(() => isFunction(options.validations)
+      ? options.validations.call(this)
+      : options.validations
+    )
+    let $v
+
+    options.computed.$v = function () {
+      if ($v) {
+        return $v.value
+      } else {
+        $v = computed(() => setValidations({ validations, state: this, resultsStorage }))
+        return $v.value
+      }
+    }
   }
 }
 
@@ -84,3 +89,5 @@ export const VuelidateMixin = {
 export function VuelidatePlugin (app) {
   app.mixin(VuelidateMixin)
 }
+
+export default useVuelidate

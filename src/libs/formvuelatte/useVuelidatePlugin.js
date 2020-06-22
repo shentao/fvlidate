@@ -1,57 +1,42 @@
-import { toRefs, isRef, reactive, watch, h } from 'vue'
-import { required } from '@/libs/validators/withMessages'
-const unwrap = v => isRef(v) ? v.value : v
+import { h, markRaw, toRefs, computed } from 'vue'
+import useVuelidate from '../vuelidate/index.js'
 
-export default function VuelidatePlugin (useVuelidate) {
-  return function (baseReturns, props, { emit }) {
-    // Take the parsed schema from SchemaForm setup returns
-    const { parsedSchema } = baseReturns
+export default function VuelidatePlugin (baseReturns) {
+  // Take the parsed schema from SchemaForm setup returns
+  const { parsedSchema } = baseReturns
 
-    // Wrap all components with the "withVuelidate" component
-    const schemaWithVuelidate = unwrap(parsedSchema).map(el => {
-      return {
-        ...el,
-        component: withVuelidate(el.component, useVuelidate)
-      }
-    })
-
-    const v$ = useVuelidate()
-    emit('update:validations', v$)
-
+  // Wrap all components with the "withVuelidate" component
+  const schemaWithVuelidate = computed(() => parsedSchema.value.map(el => {
     return {
-      ...baseReturns,
-      parsedSchema: schemaWithVuelidate,
-      v$: reactive(v$)
+      ...el,
+      component: markRaw(withVuelidate(el.component))
     }
+  }))
+
+  return {
+    ...baseReturns,
+    parsedSchema: schemaWithVuelidate
   }
 }
 
-export function withVuelidate (Comp, useVuelidate) {
+export function withVuelidate (Comp) {
   return {
+    props: ['model', 'modelValue', 'validations'],
     setup (props, { attrs }) {
-      const { validations, modelValue, model } = toRefs(props)
+      const { model, validations, modelValue } = toRefs(props)
       const propertyName = model.value
 
       // Setup validation results for that schema leaf
-      const vResults = useVuelidate(
+      const vuelidateResults = useVuelidate(
         { [propertyName]: validations.value },
         { [propertyName]: modelValue },
         propertyName
       )
 
-      return {
-        vResults,
-        props,
-        attrs
-      }
-    },
-    render () {
-      // It renders the original component with the
-      // validation results as props
-      return h(Comp, {
-        ...this.props,
-        ...this.attrs,
-        vResults: this.vResults
+      return () => h(Comp, {
+        ...props,
+        ...attrs,
+        vuelidateResults
       })
     }
   }

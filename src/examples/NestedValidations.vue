@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <div class="w-1/2">
+    <div class="w-2/3">
       <fieldset class="p-2 m-2 border border-black">
         <h3 class="text-lg">Wrapper Form</h3>
         <!-- NOTE 2: Child component with validations -->
@@ -17,7 +17,7 @@
         <ErrorsList :errors="v$.$errors" :custom-message="messageWithProperty" />
       </fieldset>
     </div>
-    <div class="w-1/2">
+    <div class="w-1/3">
       <h2 class="text-xl">Vuelidate Output:</h2>
       <pre class="pre">v$: {{ v$ }}</pre>
     </div>
@@ -26,10 +26,10 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useVuelidate from '@/libs/vuelidate'
-import NestedA from '@/components/NestedA'
-import ErrorsList from '@/components/ErrorsList'
-import { required, email } from '@/libs/validators/withMessages'
+import useVuelidate from '../libs/vuelidate/index.js'
+import NestedA from '../components/NestedA.vue'
+import ErrorsList from '../components/ErrorsList.vue'
+import { required, email } from '../libs/validators/withMessages/index.js'
 
 export default {
   components: { NestedA, ErrorsList },

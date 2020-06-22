@@ -10,8 +10,6 @@
       >
         {{ view.name }}
       </a>
-    </div>
-    <div class="mb-2">
       <a
         v-for="view of fvlViews"
         :key="view.name"
@@ -21,8 +19,6 @@
       >
         {{ view.name }}
       </a>
-    </div>
-    <div v-if="comboViewsEnabled" class="mb-2">
       <a
         v-for="view of comboViews"
         :key="view.name"
@@ -40,14 +36,13 @@
 
 <script>
 import { ref, computed } from 'vue'
-import SimpleForm from '@/examples/SimpleForm'
-import FancyForm from '@/examples/FancyForm'
-import Formception from '@/examples/Formception'
-import SimpleValidations from '@/examples/SimpleValidations'
-import NestedValidations from '@/examples/NestedValidations'
-import AsComposition from '@/examples/AsComposition'
-import PluginExample from '@/examples/PluginExample'
-import FancyPluginExample from '@/examples/FancyPluginExample'
+import SimpleForm from './examples/SimpleForm.vue'
+import FancyForm from './examples/FancyForm.vue'
+import Formception from './examples/Formception.vue'
+import SimpleValidations from './examples/SimpleValidations.vue'
+import NestedValidations from './examples/NestedValidations.vue'
+import AsComposition from './examples/AsComposition.vue'
+import PluginExample from './examples/PluginExample.vue'
 
 const fvlViews = [
   { comp: SimpleForm, name: 'Simple Schema Form', slug: '#simple-form' },
@@ -56,20 +51,18 @@ const fvlViews = [
 ]
 
 const vldViews = [
-  { comp: SimpleValidations, name: 'Simple Validations', slug: '#simple-vuelidate' },
+  { comp: SimpleValidations, name: 'Lazy Validations', slug: '#simple-vuelidate' },
   { comp: NestedValidations, name: 'Nested Validations', slug: '#nested-vuelidate' },
   { comp: AsComposition, name: 'Composition API', slug: '#composition-api' }
 ]
 
 const comboViews = [
-  { comp: PluginExample, name: 'FormVueLatte + Vuelidate', slug: '#form-vue-latte-vuelidate' },
-  { comp: FancyPluginExample, name: 'Fancy FormVueLatte + Vuelidate', slug: '#fancy-form-vue-latte-vuelidate' }
+  { comp: PluginExample, name: 'FormVueLatte + Vuelidate', slug: '#form-vue-latte-vuelidate' }
 ]
 
 export default {
   setup () {
     const currentViewSlug = ref(location.hash)
-    const comboViewsEnabled = ref(true)
     const visited = ref([location.hash])
 
     window.addEventListener('hashchange', (...a) => {
@@ -87,7 +80,6 @@ export default {
       fvlViews,
       vldViews,
       comboViews,
-      comboViewsEnabled,
       currentView,
       currentViewSlug,
       isCurrent

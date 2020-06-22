@@ -1,6 +1,6 @@
-import SchemaForm from './SchemaForm'
-import SchemaWizard from './SchemaWizard'
-import SchemaFormFactory from './SchemaFormFactory'
+import SchemaForm from './SchemaForm.vue'
+import SchemaWizard from './SchemaWizard.vue'
+import SchemaFormFactory from './SchemaFormFactory.js'
 
 export default SchemaForm
 

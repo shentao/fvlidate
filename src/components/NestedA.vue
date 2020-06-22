@@ -1,6 +1,6 @@
-<template lang="html">
+<template>
   <fieldset class="p-2 m-2 mb-4 border border-black">
-    <h3 class="text-lg">Nested Form B</h3>
+    <h3 class="text-lg">Nested Component A</h3>
     <hr class="my-2">
     <div class="flex">
       <div class="w-1/2">
@@ -37,11 +37,11 @@
 
 <script>
 import { ref } from 'vue'
-import useVuelidate from '@/libs/vuelidate'
-import { required, maxValue, minValue } from '@/libs/validators/withMessages'
-import NestedB from '@/components/NestedB'
-import FormText from '@/components/form-elements/FormText'
-import ErrorsList from '@/components/ErrorsList'
+import useVuelidate from '../libs/vuelidate/index.js'
+import { required, maxValue, minValue } from '../libs/validators/withMessages/index.js'
+import NestedB from '../components/NestedB.vue'
+import FormText from '../components/form-elements/FormText.vue'
+import ErrorsList from '../components/ErrorsList.vue'
 
 export default {
   name: 'NestedA',

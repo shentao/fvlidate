@@ -20,7 +20,7 @@ export default {
     },
     customMessage: {
       type: Function,
-      default: () => err => err.$message
+      default: err => err.$message
     }
   }
 }

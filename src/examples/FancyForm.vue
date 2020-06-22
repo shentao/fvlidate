@@ -13,24 +13,24 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
-import FormText from '@/components/form-elements/FormText'
-import FormSelect from '@/components/form-elements/FormSelect'
-import FormCheckbox from '@/components/form-elements/FormCheckbox'
-import EmailModal from '@/components/form-elements/EmailModal'
-import SchemaForm from '@/libs/formvuelatte/SchemaForm'
+import { ref, computed, markRaw } from 'vue'
+import FormText from '../components/form-elements/FormText.vue'
+import FormSelect from '../components/form-elements/FormSelect.vue'
+import FormCheckbox from '../components/form-elements/FormCheckbox.vue'
+import EmailModal from '../components/form-elements/EmailModal.vue'
+import SchemaForm from '../libs/formvuelatte/SchemaForm.vue'
 
 const SCHEMA = {
   firstName: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'First Name'
   },
   lastName: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'Last Name'
   },
   email: {
-    component: FormText,
+    component: markRaw(FormText),
     label: 'Your email',
     config: {
       type: 'email'
@@ -38,10 +38,10 @@ const SCHEMA = {
   },
   emailTemplate: {
     // NOTE 1: This is a special component
-    component: EmailModal
+    component: markRaw(EmailModal)
   },
   favoriteThingAboutVue: {
-    component: FormSelect,
+    component: markRaw(FormSelect),
     label: 'Favorite thing about Vue',
     required: true,
     options: [
@@ -51,7 +51,7 @@ const SCHEMA = {
     ]
   },
   isVueFan: {
-    component: FormCheckbox,
+    component: markRaw(FormCheckbox),
     label: 'Are you a Vue fan?'
   }
 }
@@ -65,7 +65,7 @@ export default {
       ? {
         ...SCHEMA,
         feedback: {
-          component: FormText,
+          component: markRaw(FormText),
           label: 'Gimme some feedback'
         }
       }
